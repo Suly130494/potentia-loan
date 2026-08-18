@@ -4,6 +4,8 @@ Outil de constat locatif tablette-first : **état des lieux** et **inventaire de
 (annexe obligatoire au bail meublé, art. 25-8 de la loi n° 89-462), dans une page web
 autonome qui fonctionne hors ligne.
 
+**→ https://suly130494.github.io/potentia-loan/**
+
 Édité par Potentia Digital.
 
 ## Ce que fait l'outil
@@ -21,6 +23,13 @@ autonome qui fonctionne hors ligne.
 - Export / import du dossier en JSON, photos incluses.
 
 L'outil démarre **vierge** : aucune donnée personnelle n'est codée en dur.
+
+## Installation sur une tablette
+
+Ouvrez le lien ci-dessus, puis « Ajouter à l'écran d'accueil » (menu du navigateur sur
+Android, menu Partager sur iOS). L'outil s'ouvre alors en plein écran, comme une
+application, et **fonctionne sans réseau** : un service worker met la page en cache au
+premier chargement. Utile en cave, en sous-sol ou dans un logement sans couverture.
 
 ## Fonctionnement
 
@@ -40,7 +49,16 @@ unique publiable.
 python build.py
 ```
 
-Produit `dist/potentia-loan.html`. Le build échoue volontairement si une ressource réseau
+Produit deux sorties depuis les mêmes sources :
+
+- `dist/potentia-loan.html` — fragment sans `<html>` ni `<head>`, pour publication
+  comme artefact Claude, qui fournit lui-même ce squelette.
+- `index.html` + `sw.js` + `manifest.webmanifest` + `icon.svg` à la racine — page
+  complète servie par GitHub Pages, avec `viewport`, langue déclarée et mise en cache
+  hors ligne.
+
+Le nom du cache du service worker dérive d'une empreinte du contenu : chaque build
+invalide automatiquement l'ancienne version. Le build échoue volontairement si une ressource réseau
 externe s'est glissée dans les sources.
 
 Serveur de test local (nécessaire : `IndexedDB` est bloqué sur les origines `file://`) :
