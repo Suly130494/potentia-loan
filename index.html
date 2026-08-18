@@ -1659,12 +1659,17 @@ PL.nouveauDossier = function () {
       }).catch(function () {});
     },
 
-    /* Tous les identifiants de photos référencés par un dossier. */
-    idsDuDossier: function (dossier) {
+    /* Identifiants des photos d'une campagne, ou des deux si `mode` est omis.
+       C'est LA liste de référence des emplacements où une photo peut exister :
+       tout code qui consomme des photos — l'impression au premier chef — doit
+       couvrir les mêmes. Les photos de compteurs ont un jour été oubliées à
+       l'impression parce que cette liste y était réécrite en double. */
+    idsDuDossier: function (dossier, mode) {
+      var campagnes = mode ? [mode] : ["entree", "sortie"];
       var ids = [];
       function collecter(bloc) {
         if (!bloc) return;
-        ["entree", "sortie"].forEach(function (c) {
+        campagnes.forEach(function (c) {
           (bloc[c] || []).forEach(function (p) { if (p && p.id) ids.push(p.id); });
         });
       }
@@ -1672,7 +1677,7 @@ PL.nouveauDossier = function () {
       (dossier.mobilier.sections || []).forEach(function (s) {
         (s.lignes || []).forEach(function (l) { collecter(l.photos); });
       });
-      ["entree", "sortie"].forEach(function (c) {
+      campagnes.forEach(function (c) {
         var cpt = dossier.edl.compteurs && dossier.edl.compteurs[c];
         if (!cpt) return;
         PL.DEFAULTS.compteurs.forEach(function (m) {
@@ -3625,13 +3630,24 @@ PL.vues.signatures = function (dossier, mode) {
         el("td", null, texteOu(l.unite, ""))));
     });
 
+    /* Les clichés de compteur restent avec leur relevé : c'est le chiffre
+       qu'ils justifient, et c'est celui qui est le plus souvent contesté. */
+    var photosCompteurs = [];
+    PL.DEFAULTS.compteurs.forEach(function (m) {
+      var refs = (cpt[m.cle] && cpt[m.cle].photos) || [];
+      if (refs.length) photosCompteurs.push(grillePhotos(refs, m.libelle));
+    });
+
     frag.appendChild(el("section", { class: "p-section" },
       el("h2", null, "Relevé des compteurs"),
       tableau([
         { libelle: "Compteur", style: "width:55%" },
         { libelle: "Relevé", style: "width:30%" },
         { libelle: "Unité", style: "width:15%" }
-      ], lignesCpt)
+      ], lignesCpt),
+      photosCompteurs.length
+        ? el("div", { style: "margin-top:3mm" }, photosCompteurs)
+        : null
     ));
 
     /* chauffage et divers */
@@ -3921,6 +3937,20 @@ PL.vues.signatures = function (dossier, mode) {
     ));
 
     conteneur.setAttribute("aria-hidden", "true");
+
+    /* Filet : toute photo saisie dans la campagne imprimée doit se retrouver
+       dans le document. Un emplacement ajouté à la saisie mais oublié ici se
+       signale immédiatement au lieu de disparaître en silence. */
+    if (type === "complet") {
+      var attendues = PL.photos.idsDuDossier(dossier, mode).length;
+      var produites = conteneur.querySelectorAll(".p-photos img").length;
+      if (produites < attendues && window.console && window.console.warn) {
+        window.console.warn(
+          "Potentia Loan — " + (attendues - produites) + " photo(s) de la campagne « " +
+          mode + " » ne sont pas reprises dans le document imprimé.");
+      }
+    }
+
     return Promise.all(attentesImages);
   };
 

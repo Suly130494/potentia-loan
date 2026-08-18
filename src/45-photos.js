@@ -178,12 +178,17 @@
       }).catch(function () {});
     },
 
-    /* Tous les identifiants de photos référencés par un dossier. */
-    idsDuDossier: function (dossier) {
+    /* Identifiants des photos d'une campagne, ou des deux si `mode` est omis.
+       C'est LA liste de référence des emplacements où une photo peut exister :
+       tout code qui consomme des photos — l'impression au premier chef — doit
+       couvrir les mêmes. Les photos de compteurs ont un jour été oubliées à
+       l'impression parce que cette liste y était réécrite en double. */
+    idsDuDossier: function (dossier, mode) {
+      var campagnes = mode ? [mode] : ["entree", "sortie"];
       var ids = [];
       function collecter(bloc) {
         if (!bloc) return;
-        ["entree", "sortie"].forEach(function (c) {
+        campagnes.forEach(function (c) {
           (bloc[c] || []).forEach(function (p) { if (p && p.id) ids.push(p.id); });
         });
       }
@@ -191,7 +196,7 @@
       (dossier.mobilier.sections || []).forEach(function (s) {
         (s.lignes || []).forEach(function (l) { collecter(l.photos); });
       });
-      ["entree", "sortie"].forEach(function (c) {
+      campagnes.forEach(function (c) {
         var cpt = dossier.edl.compteurs && dossier.edl.compteurs[c];
         if (!cpt) return;
         PL.DEFAULTS.compteurs.forEach(function (m) {

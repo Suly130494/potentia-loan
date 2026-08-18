@@ -160,13 +160,24 @@
         el("td", null, texteOu(l.unite, ""))));
     });
 
+    /* Les clichés de compteur restent avec leur relevé : c'est le chiffre
+       qu'ils justifient, et c'est celui qui est le plus souvent contesté. */
+    var photosCompteurs = [];
+    PL.DEFAULTS.compteurs.forEach(function (m) {
+      var refs = (cpt[m.cle] && cpt[m.cle].photos) || [];
+      if (refs.length) photosCompteurs.push(grillePhotos(refs, m.libelle));
+    });
+
     frag.appendChild(el("section", { class: "p-section" },
       el("h2", null, "Relevé des compteurs"),
       tableau([
         { libelle: "Compteur", style: "width:55%" },
         { libelle: "Relevé", style: "width:30%" },
         { libelle: "Unité", style: "width:15%" }
-      ], lignesCpt)
+      ], lignesCpt),
+      photosCompteurs.length
+        ? el("div", { style: "margin-top:3mm" }, photosCompteurs)
+        : null
     ));
 
     /* chauffage et divers */
@@ -456,6 +467,20 @@
     ));
 
     conteneur.setAttribute("aria-hidden", "true");
+
+    /* Filet : toute photo saisie dans la campagne imprimée doit se retrouver
+       dans le document. Un emplacement ajouté à la saisie mais oublié ici se
+       signale immédiatement au lieu de disparaître en silence. */
+    if (type === "complet") {
+      var attendues = PL.photos.idsDuDossier(dossier, mode).length;
+      var produites = conteneur.querySelectorAll(".p-photos img").length;
+      if (produites < attendues && window.console && window.console.warn) {
+        window.console.warn(
+          "Potentia Loan — " + (attendues - produites) + " photo(s) de la campagne « " +
+          mode + " » ne sont pas reprises dans le document imprimé.");
+      }
+    }
+
     return Promise.all(attentesImages);
   };
 
