@@ -1,0 +1,4165 @@
+<meta charset="utf-8">
+<title>Potentia Loan — État des lieux & inventaire</title>
+<style>
+/* === 10-screen.css === */
+/* ------------------------------------------------------------------
+   Potentia Loan — styles écran
+   Direction : neutre administratif. Gris et noir, aucun effet décoratif.
+   ------------------------------------------------------------------ */
+
+:root {
+  --fond: #f4f5f6;
+  --fond-carte: #ffffff;
+  --fond-sourd: #eceef0;
+  --fond-entete-tableau: #e4e7e9;
+  --texte: #16181a;
+  --texte-sourd: #5c6165;
+  --bordure: #cfd3d6;
+  --bordure-forte: #9aa0a5;
+  --accent: #24282b;
+  --accent-texte: #ffffff;
+  --danger: #8c1d18;
+  --danger-fond: #fbeceb;
+  --ok: #1d5c2e;
+  --focus: #0b5cad;
+  --rayon: 3px;
+  --pas: 8px;
+  --cible: 44px;
+  --largeur-max: 1180px;
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fond: #131518;
+    --fond-carte: #1c1f22;
+    --fond-sourd: #24282c;
+    --fond-entete-tableau: #2b3035;
+    --texte: #e9ebed;
+    --texte-sourd: #a4abb1;
+    --bordure: #3a4046;
+    --bordure-forte: #5d656c;
+    --accent: #e9ebed;
+    --accent-texte: #16181a;
+    --danger: #f2b8b5;
+    --danger-fond: #3a1f1d;
+    --ok: #8fd3a2;
+    --focus: #7cb7f0;
+  }
+}
+
+:root[data-theme="light"] {
+  --fond: #f4f5f6;
+  --fond-carte: #ffffff;
+  --fond-sourd: #eceef0;
+  --fond-entete-tableau: #e4e7e9;
+  --texte: #16181a;
+  --texte-sourd: #5c6165;
+  --bordure: #cfd3d6;
+  --bordure-forte: #9aa0a5;
+  --accent: #24282b;
+  --accent-texte: #ffffff;
+  --danger: #8c1d18;
+  --danger-fond: #fbeceb;
+  --ok: #1d5c2e;
+  --focus: #0b5cad;
+}
+
+:root[data-theme="dark"] {
+  --fond: #131518;
+  --fond-carte: #1c1f22;
+  --fond-sourd: #24282c;
+  --fond-entete-tableau: #2b3035;
+  --texte: #e9ebed;
+  --texte-sourd: #a4abb1;
+  --bordure: #3a4046;
+  --bordure-forte: #5d656c;
+  --accent: #e9ebed;
+  --accent-texte: #16181a;
+  --danger: #f2b8b5;
+  --danger-fond: #3a1f1d;
+  --ok: #8fd3a2;
+  --focus: #7cb7f0;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--fond);
+  color: var(--texte);
+  font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-text-size-adjust: 100%;
+  overflow-x: hidden;
+}
+
+h1, h2, h3 { line-height: 1.25; margin: 0; font-weight: 650; }
+h1 { font-size: 1.35rem; }
+h2 { font-size: 1.1rem; }
+h3 { font-size: 0.95rem; }
+p { margin: 0 0 var(--pas); }
+
+:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  padding: 0; margin: -1px; overflow: hidden;
+  clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+.saut-contenu {
+  position: absolute; left: -9999px; top: 0; z-index: 100;
+  background: var(--accent); color: var(--accent-texte);
+  padding: 12px 16px; text-decoration: none;
+}
+.saut-contenu:focus { left: 0; }
+
+/* --- ossature ------------------------------------------------------ */
+
+.app-entete {
+  position: sticky; top: 0; z-index: 20;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--pas);
+  padding: 10px 16px;
+  background: var(--fond-carte);
+  border-bottom: 1px solid var(--bordure);
+  flex-wrap: wrap;
+}
+
+.app-entete__marque { display: flex; align-items: center; gap: 10px; }
+.app-logo { width: 26px; height: 26px; color: var(--texte); flex: none; }
+.app-entete__titre { font-weight: 650; letter-spacing: 0.01em; }
+
+.app-entete__actions { display: flex; gap: 6px; flex-wrap: wrap; }
+
+#vue {
+  display: block;
+  max-width: var(--largeur-max);
+  margin: 0 auto;
+  padding: 16px 16px 96px;
+}
+#vue:focus { outline: none; }
+
+.app-pied {
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: 4px;
+  max-width: var(--largeur-max);
+  margin: 0 auto;
+  padding: 12px 16px 28px;
+  color: var(--texte-sourd);
+  font-size: 0.78rem;
+  border-top: 1px solid var(--bordure);
+}
+
+/* --- fil d'ariane / titre de vue ----------------------------------- */
+
+.vue-entete {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  gap: var(--pas); flex-wrap: wrap; margin-bottom: 14px;
+}
+.vue-entete__texte { min-width: 0; }
+.vue-entete__sur {
+  font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em;
+  color: var(--texte-sourd); margin-bottom: 2px;
+}
+
+/* --- boutons -------------------------------------------------------- */
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+  min-height: var(--cible); min-width: var(--cible);
+  padding: 0 14px;
+  font: inherit; font-size: 0.9rem; font-weight: 550;
+  color: var(--texte);
+  background: var(--fond-carte);
+  border: 1px solid var(--bordure-forte);
+  border-radius: var(--rayon);
+  cursor: pointer;
+  text-align: center;
+}
+.btn:hover { background: var(--fond-sourd); }
+.btn:active { transform: translateY(1px); }
+.btn[disabled] { opacity: 0.45; cursor: not-allowed; }
+
+.btn--principal { background: var(--accent); color: var(--accent-texte); border-color: var(--accent); }
+.btn--principal:hover { filter: brightness(1.15); background: var(--accent); }
+.btn--discret { border-color: transparent; background: transparent; }
+.btn--discret:hover { background: var(--fond-sourd); }
+.btn--danger { color: var(--danger); border-color: var(--danger); }
+.btn--danger:hover { background: var(--danger-fond); }
+/* « petit » joue sur le poids visuel (police, marges), jamais sur la hauteur
+   de la cible tactile : l'outil s'utilise debout, parfois avec des gants. */
+.btn--petit { min-height: var(--cible); padding: 0 12px; font-size: 0.82rem; }
+.btn--bloc { width: 100%; }
+
+.barre-actions {
+  display: flex; gap: var(--pas); flex-wrap: wrap;
+  margin-top: 18px; padding-top: 14px;
+  border-top: 1px solid var(--bordure);
+}
+
+/* --- cartes et sections -------------------------------------------- */
+
+.carte {
+  background: var(--fond-carte);
+  border: 1px solid var(--bordure);
+  border-radius: var(--rayon);
+  padding: 14px;
+  margin-bottom: 14px;
+}
+.carte__entete {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: var(--pas); flex-wrap: wrap; margin-bottom: 12px;
+}
+.carte__titre { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.carte--sourde { background: var(--fond-sourd); }
+
+.note {
+  font-size: 0.82rem; color: var(--texte-sourd);
+  border-left: 3px solid var(--bordure-forte);
+  padding: 6px 0 6px 10px; margin: 10px 0;
+}
+.note--alerte { border-left-color: var(--danger); color: var(--danger); }
+
+.etat-vide {
+  text-align: center; padding: 40px 16px; color: var(--texte-sourd);
+  border: 1px dashed var(--bordure-forte); border-radius: var(--rayon);
+}
+
+/* --- champs --------------------------------------------------------- */
+
+.champ { display: block; margin-bottom: 12px; }
+.champ__label {
+  display: block; font-size: 0.8rem; font-weight: 600;
+  color: var(--texte-sourd); margin-bottom: 4px;
+}
+.champ__saisie {
+  display: flex; align-items: center; gap: 6px;
+}
+.champ input[type="text"],
+.champ input[type="number"],
+.champ input[type="date"],
+.champ textarea,
+.champ select {
+  width: 100%;
+  min-height: var(--cible);
+  padding: 8px 10px;
+  font: inherit;
+  color: var(--texte);
+  background: var(--fond-carte);
+  border: 1px solid var(--bordure-forte);
+  border-radius: var(--rayon);
+}
+.champ textarea { min-height: 76px; resize: vertical; line-height: 1.45; }
+/* Les relevés et quantités se lisent en colonne : chiffres à chasse fixe. */
+.champ input[type="number"],
+.champ input[type="date"],
+.inv-ligne__qte input,
+.hub-item__compte,
+.dossier-ligne__meta,
+.etat-lecture__pastille,
+.segmente__opt { font-variant-numeric: tabular-nums; }
+.champ__suffixe { color: var(--texte-sourd); font-size: 0.85rem; white-space: nowrap; }
+
+.grille-champs {
+  display: grid; gap: 0 14px;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 700px) {
+  .grille-champs { grid-template-columns: 1fr 1fr; }
+  .grille-champs .champ--large { grid-column: 1 / -1; }
+}
+
+.case {
+  display: flex; align-items: center; gap: 10px;
+  min-height: var(--cible); padding: 4px 8px;
+  border: 1px solid var(--bordure); border-radius: var(--rayon);
+  cursor: pointer; font-size: 0.9rem;
+  background: var(--fond-carte);
+}
+.case input { width: 20px; height: 20px; flex: none; accent-color: var(--focus); }
+.case--cochee { border-color: var(--bordure-forte); background: var(--fond-sourd); }
+.grille-cases {
+  display: grid; gap: 6px;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+}
+
+/* --- sélecteur d'état segmenté -------------------------------------- */
+
+.segmente { display: flex; gap: 4px; flex-wrap: wrap; }
+.segmente__opt {
+  flex: 1 1 0; min-width: 46px;
+  min-height: var(--cible);
+  display: inline-flex; align-items: center; justify-content: center;
+  font: inherit; font-size: 0.85rem; font-weight: 650;
+  color: var(--texte);
+  background: var(--fond-carte);
+  border: 1px solid var(--bordure-forte);
+  border-radius: var(--rayon);
+  cursor: pointer;
+}
+.segmente__opt[aria-checked="true"] {
+  background: var(--accent); color: var(--accent-texte); border-color: var(--accent);
+}
+.segmente--desactive { opacity: 0.4; pointer-events: none; }
+.segmente__opt:hover { background: var(--fond-sourd); }
+.segmente__opt[aria-checked="true"]:hover { background: var(--accent); }
+
+.etat-lecture {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-size: 0.78rem; color: var(--texte-sourd);
+}
+.etat-lecture__pastille {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 30px; height: 24px; padding: 0 6px;
+  border: 1px solid var(--bordure-forte); border-radius: var(--rayon);
+  font-weight: 700; font-size: 0.75rem; color: var(--texte);
+}
+
+/* --- hub ------------------------------------------------------------ */
+
+.hub-grille {
+  display: grid; gap: 10px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}
+.hub-item {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  min-height: 68px; padding: 12px 14px; text-align: left;
+  background: var(--fond-carte);
+  border: 1px solid var(--bordure-forte);
+  border-radius: var(--rayon);
+  cursor: pointer; font: inherit; color: var(--texte);
+}
+.hub-item:hover { background: var(--fond-sourd); }
+.hub-item__titre { font-weight: 600; }
+.hub-item__sous { font-size: 0.78rem; color: var(--texte-sourd); }
+.hub-item__compte {
+  font-size: 0.75rem; font-weight: 700; white-space: nowrap;
+  padding: 3px 7px; border-radius: 999px;
+  background: var(--fond-sourd); border: 1px solid var(--bordure);
+}
+.hub-item__compte--complet { background: var(--accent); color: var(--accent-texte); border-color: var(--accent); }
+
+.jauge {
+  height: 6px; background: var(--fond-sourd);
+  border: 1px solid var(--bordure); border-radius: 999px; overflow: hidden;
+}
+.jauge__barre { height: 100%; background: var(--bordure-forte); }
+.jauge__barre--alerte { background: var(--danger); }
+
+/* --- liste des dossiers --------------------------------------------- */
+
+.liste-dossiers { display: grid; gap: 10px; }
+.dossier-ligne {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap;
+  padding: 12px 14px;
+  background: var(--fond-carte);
+  border: 1px solid var(--bordure); border-radius: var(--rayon);
+}
+.dossier-ligne__info { min-width: 200px; flex: 1 1 240px; }
+.dossier-ligne__titre { font-weight: 600; }
+.dossier-ligne__meta { font-size: 0.78rem; color: var(--texte-sourd); }
+.dossier-ligne__actions { display: flex; gap: 6px; flex-wrap: wrap; }
+
+.badge {
+  display: inline-block; font-size: 0.7rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.05em;
+  padding: 2px 6px; border-radius: var(--rayon);
+  border: 1px solid var(--bordure-forte); color: var(--texte-sourd);
+}
+.badge--signe { border-color: var(--ok); color: var(--ok); }
+.badge--sortie { border-color: var(--focus); color: var(--focus); }
+
+/* --- mise en page deux colonnes (tablette et plus) ------------------ */
+
+.duo { display: grid; gap: 14px; grid-template-columns: 1fr; align-items: start; }
+/* Sans min-width:0 un élément de grille ne rétrécit pas sous la largeur de son
+   contenu : la barre défilante étirerait la page entière. */
+.duo > * { min-width: 0; }
+.grille-champs > *, .constat-grille > *, .inv-ligne > * { min-width: 0; }
+@media (min-width: 900px) {
+  .duo { grid-template-columns: 260px minmax(0, 1fr); }
+  .duo__aside { position: sticky; top: 76px; }
+}
+.liste-nav { display: grid; gap: 4px; }
+.liste-nav__item {
+  display: flex; align-items: center; justify-content: space-between; gap: 8px;
+  min-height: var(--cible); padding: 8px 10px; text-align: left;
+  font: inherit; font-size: 0.9rem; color: var(--texte);
+  background: transparent; border: 1px solid transparent;
+  border-radius: var(--rayon); cursor: pointer;
+}
+.liste-nav__item:hover { background: var(--fond-sourd); }
+.liste-nav__item[aria-current="true"] {
+  background: var(--fond-carte); border-color: var(--bordure-forte); font-weight: 650;
+}
+
+/* Sous 900 px la colonne latérale passe au-dessus : en liste verticale elle
+   repousserait la saisie hors de l'écran. On la replie en barre défilante. */
+@media (max-width: 899px) {
+  .liste-nav {
+    grid-auto-flow: column;
+    grid-auto-columns: max-content;
+    overflow-x: auto;
+    padding-bottom: 6px;
+    gap: 6px;
+  }
+  .liste-nav__item {
+    white-space: nowrap;
+    border-color: var(--bordure);
+    background: var(--fond-carte);
+  }
+  .duo__aside .carte { padding: 10px; }
+}
+
+/* --- lignes de constat ---------------------------------------------- */
+
+.constat-ligne {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--bordure);
+}
+.constat-ligne:last-child { border-bottom: 0; }
+.constat-ligne__entete {
+  display: flex; align-items: baseline; justify-content: space-between;
+  gap: 10px; flex-wrap: wrap; margin-bottom: 8px;
+}
+.constat-ligne__nom { font-weight: 600; }
+.constat-grille {
+  display: grid; gap: 10px;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 640px) {
+  .constat-grille { grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); }
+  .constat-grille .constat-grille__large { grid-column: 1 / -1; }
+}
+
+.inv-ligne {
+  display: grid; gap: 10px;
+  grid-template-columns: 1fr;
+  padding: 12px 0; border-bottom: 1px solid var(--bordure);
+}
+.inv-ligne:last-child { border-bottom: 0; }
+.inv-ligne__tete {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 10px; flex-wrap: wrap;
+}
+.inv-ligne__nom { font-weight: 600; }
+.inv-ligne__qte { width: 90px; flex: none; }
+.inv-ligne--absente .inv-ligne__nom { text-decoration: line-through; color: var(--texte-sourd); }
+
+/* --- photos ---------------------------------------------------------- */
+
+.photos { margin-top: 10px; }
+.photos__grille {
+  display: grid; gap: 8px;
+  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+}
+.photo-vignette {
+  position: relative; aspect-ratio: 4 / 3; overflow: hidden;
+  border: 1px solid var(--bordure); border-radius: var(--rayon);
+  background: var(--fond-sourd);
+}
+.photo-vignette img { width: 100%; height: 100%; object-fit: cover; display: block; }
+/* Seule exception à la règle des 44 px : superposé à une miniature de ~104 px,
+   un bouton de 44 px la recouvrirait. 36 px reste très au-dessus du minimum
+   WCAG 2.5.8 (24 px). */
+.photo-vignette__suppr {
+  position: absolute; top: 4px; right: 4px;
+  width: 36px; height: 36px; border-radius: var(--rayon);
+  display: flex; align-items: center; justify-content: center;
+  background: var(--fond-carte); color: var(--danger);
+  border: 1px solid var(--bordure-forte); cursor: pointer; font: inherit; font-weight: 700;
+}
+.photo-avant { display: flex; align-items: center; gap: 6px; font-size: 0.75rem; color: var(--texte-sourd); }
+.photo-avant img {
+  width: 54px; height: 40px; object-fit: cover;
+  border: 1px solid var(--bordure); border-radius: var(--rayon);
+}
+.photo-ajout input[type="file"] { display: none; }
+
+/* --- signature -------------------------------------------------------- */
+
+.signature-bloc { display: grid; gap: 14px; grid-template-columns: 1fr; }
+@media (min-width: 800px) { .signature-bloc { grid-template-columns: 1fr 1fr; } }
+.signature-zone {
+  border: 1px solid var(--bordure-forte); border-radius: var(--rayon);
+  background: #ffffff; touch-action: none; width: 100%; height: 170px; display: block;
+}
+.signature-legende {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px; margin-top: 6px; font-size: 0.78rem; color: var(--texte-sourd);
+}
+
+/* --- dialogue et annonces --------------------------------------------- */
+
+.calque {
+  position: fixed; inset: 0; z-index: 60;
+  display: flex; align-items: center; justify-content: center;
+  padding: 16px; background: rgba(0, 0, 0, 0.45);
+}
+.dialogue {
+  width: min(560px, 100%); max-height: 86vh; overflow: auto;
+  background: var(--fond-carte); color: var(--texte);
+  border: 1px solid var(--bordure-forte); border-radius: var(--rayon);
+  padding: 18px;
+}
+.dialogue__titre { margin-bottom: 10px; }
+.dialogue__actions { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; margin-top: 16px; }
+
+.toast {
+  position: fixed; left: 50%; bottom: 20px; transform: translateX(-50%);
+  z-index: 70; max-width: min(520px, calc(100vw - 32px));
+  padding: 12px 16px; font-size: 0.88rem;
+  background: var(--accent); color: var(--accent-texte);
+  border-radius: var(--rayon);
+}
+
+.liste-manques { margin: 8px 0 0; padding-left: 18px; font-size: 0.85rem; color: var(--texte-sourd); }
+.liste-manques li { margin-bottom: 2px; }
+
+#conteneur-impression { display: none; }
+
+.defilement-x { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
+
+
+/* === 20-print.css === */
+/* ------------------------------------------------------------------
+   Potentia Loan — feuille d'impression A4.
+   Le document imprimé est un DOM distinct de l'interface de saisie.
+   ------------------------------------------------------------------ */
+
+@media print {
+  @page {
+    size: A4 portrait;
+    margin: 12mm 12mm 16mm;
+  }
+
+  html, body {
+    background: #ffffff !important;
+    color: #000000 !important;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font-size: 10.5pt;
+    line-height: 1.32;
+  }
+
+  /* Seul le document reconstruit est imprimé. */
+  body > *:not(#conteneur-impression) { display: none !important; }
+
+  #conteneur-impression {
+    display: block !important;
+    visibility: visible;
+  }
+
+  /* Pied répété : un élément fixe est réémis sur chaque page.
+     `bottom` doit rester dans la zone de contenu — une valeur négative le
+     projette dans la marge, ce qui décale le pied d'une page et fabrique
+     une page fantôme ne contenant que lui. */
+  .p-pied-global {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    font-size: 7.5pt;
+    color: #444444;
+    border-top: 0.4pt solid #999999;
+    padding-top: 1.5mm;
+    display: flex;
+    justify-content: space-between;
+    gap: 6mm;
+  }
+
+  .p-doc--nouvelle-page { break-before: page; }
+
+  /* --- en-tête de document --- */
+
+  .p-entete {
+    border-bottom: 1.2pt solid #000000;
+    padding-bottom: 2.5mm;
+    margin-bottom: 4mm;
+    break-after: avoid;
+  }
+  .p-entete h1 {
+    font-size: 15pt;
+    letter-spacing: 0.01em;
+    margin: 0 0 1mm;
+  }
+  .p-entete__sous { font-size: 9pt; color: #333333; margin: 0; }
+  .p-entete__mention {
+    font-size: 8pt;
+    color: #000000;
+    border: 0.6pt solid #000000;
+    display: inline-block;
+    padding: 0.6mm 2mm;
+    margin-top: 1.5mm;
+  }
+
+  /* --- identité --- */
+
+  .p-identite {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 4mm;
+    margin-bottom: 4mm;
+    break-inside: avoid;
+  }
+  .p-identite h3 {
+    font-size: 8pt;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #333333;
+    margin: 0 0 1mm;
+    border-bottom: 0.4pt solid #bbbbbb;
+    padding-bottom: 0.8mm;
+  }
+  .p-identite p { margin: 0 0 0.8mm; white-space: pre-line; }
+
+  /* --- sections --- */
+
+  .p-section { margin-bottom: 5mm; }
+  .p-section > h2 {
+    font-size: 10.5pt;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 0 0 1.8mm;
+    padding-bottom: 0.8mm;
+    border-bottom: 0.6pt solid #555555;
+    break-after: avoid;
+  }
+  .p-section h3 { font-size: 9.5pt; margin: 0 0 1mm; }
+  .p-legende { font-size: 8pt; color: #444444; margin: 0 0 1.5mm; }
+  .p-mention { font-size: 9pt; margin: 0 0 3mm; }
+
+  .p-deux-col { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; }
+  .p-trois-col { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5mm; }
+  .p-deux-col p, .p-trois-col p { margin: 0 0 1mm; }
+
+  /* --- tableaux --- */
+
+  .p-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 9pt;
+  }
+  .p-table thead {
+    display: table-header-group; /* en-têtes répétés à chaque page */
+  }
+  .p-table tfoot { display: table-footer-group; }
+  .p-table th, .p-table td {
+    border: 0.4pt solid #777777;
+    padding: 1.4mm 1.6mm;
+    text-align: left;
+    vertical-align: top;
+  }
+  .p-table thead th {
+    background: #e0e0e0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    font-size: 8pt;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .p-table__titre {
+    background: #ffffff !important;
+    border-left: 0 !important;
+    border-right: 0 !important;
+    border-top: 0 !important;
+    border-bottom: 0.6pt solid #555555 !important;
+    padding: 0 0 0.8mm !important;
+    font-size: 10.5pt !important;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .p-table tbody th {
+    font-weight: 600;
+    background: #f4f4f4;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .p-table tr { break-inside: avoid; page-break-inside: avoid; }
+  .p-num { text-align: center; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .p-revetement { font-size: 8pt; color: #333333; }
+  .p-etat { font-weight: 700; }
+
+  /* --- listes d'équipements --- */
+
+  .p-liste-cases { list-style: none; margin: 0; padding: 0; font-size: 9pt; }
+  .p-liste-cases li { margin-bottom: 0.6mm; break-inside: avoid; }
+  .p-coche::before { content: "\2611  "; }
+  .p-non-coche::before { content: "\2610  "; color: #777777; }
+  .p-non-coche { color: #777777; }
+
+  /* --- zones de texte libre --- */
+
+  .p-zone-texte {
+    border: 0.4pt solid #777777;
+    min-height: 22mm;
+    padding: 2mm;
+    white-space: pre-wrap;
+    font-size: 9pt;
+    break-inside: avoid;
+  }
+
+  /* --- photos --- */
+
+  .p-photos { margin-bottom: 4mm; break-inside: avoid; }
+  .p-photos__titre { font-size: 8.5pt; font-weight: 600; margin-bottom: 1mm; }
+  .p-photos__grille {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2mm;
+  }
+  .p-photo {
+    width: 100%;
+    height: 38mm;
+    object-fit: cover;
+    border: 0.4pt solid #777777;
+    break-inside: avoid;
+  }
+
+  .p-avant-apres {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3mm;
+    margin-top: 2mm;
+  }
+  .p-avant-apres figure { margin: 0; }
+  .p-avant-apres img {
+    width: 100%;
+    height: 45mm;
+    object-fit: cover;
+    border: 0.4pt solid #777777;
+  }
+  .p-avant-apres figcaption {
+    font-size: 8pt;
+    text-align: center;
+    margin-top: 0.8mm;
+  }
+  .p-photo-absente {
+    height: 45mm;
+    border: 0.4pt dashed #999999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #777777;
+  }
+
+  /* --- écarts --- */
+
+  .p-ecart {
+    border-left: 1.5pt solid #000000;
+    padding: 1.5mm 0 1.5mm 3mm;
+    margin-bottom: 3.5mm;
+    break-inside: avoid;
+  }
+  .p-ecart h3 { font-size: 10pt; margin: 0 0 0.8mm; }
+  .p-ecart p { margin: 0 0 0.8mm; font-size: 9pt; }
+
+  /* --- signatures --- */
+
+  .p-signatures {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 6mm;
+    break-inside: avoid;
+  }
+  .p-signature { break-inside: avoid; }
+  .p-signature__titre { font-size: 9pt; font-weight: 700; margin-bottom: 0.5mm; }
+  .p-signature__mention { font-size: 8pt; color: #444444; margin-bottom: 1mm; }
+  .p-signature__zone {
+    border: 0.4pt solid #777777;
+    height: 26mm;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .p-signature__zone img { max-width: 100%; max-height: 100%; object-fit: contain; }
+  .p-signature__nom { font-size: 8.5pt; margin-top: 1mm; }
+
+  /* --- règles générales de pagination --- */
+
+  .p-eviter-coupure { break-inside: avoid; page-break-inside: avoid; }
+  p, li { orphans: 3; widows: 3; }
+  h1, h2, h3 { break-after: avoid; page-break-after: avoid; }
+  img { break-inside: avoid; }
+}
+
+/* Le conteneur d'impression n'est jamais visible à l'écran. */
+@media screen {
+  #conteneur-impression { display: none; }
+}
+
+</style>
+<!-- === 00-shell.html === -->
+<a class="saut-contenu" href="#vue">Aller au contenu</a>
+
+<header class="app-entete" id="app-entete">
+  <div class="app-entete__marque">
+    <svg class="app-logo" viewBox="0 0 32 32" role="img" aria-label="Potentia Loan" focusable="false">
+      <rect x="1.25" y="1.25" width="29.5" height="29.5" rx="4" fill="none" stroke="currentColor" stroke-width="2.5"/>
+      <path d="M9.5 24V8.5h6.2a4.9 4.9 0 0 1 0 9.8H13" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"/>
+      <path d="M18.5 24h5" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="square"/>
+    </svg>
+    <span class="app-entete__titre">Potentia&nbsp;Loan</span>
+  </div>
+  <nav class="app-entete__actions" id="app-actions" aria-label="Actions du dossier"></nav>
+</header>
+
+<main id="vue" tabindex="-1"></main>
+
+<footer class="app-pied">
+  <span>Potentia&nbsp;Loan — outil de constat locatif</span>
+  <span>Édité par Potentia&nbsp;Digital</span>
+</footer>
+
+<div id="calque-dialogues"></div>
+<div id="zone-annonces" class="sr-only" role="status" aria-live="polite"></div>
+<div id="conteneur-impression" aria-hidden="true"></div>
+
+<script>
+"use strict";
+(function () {
+var PL = (window.PL = window.PL || {});
+/* === 30-defaults.js === */
+/* ------------------------------------------------------------------
+   Données par défaut, transcrites des deux modèles papier.
+   Ce fichier ne contient que des données et des fabriques : aucune
+   logique métier, aucun accès au DOM, aucune donnée personnelle.
+   ------------------------------------------------------------------ */
+
+PL.SCHEMA_VERSION = 1;
+
+PL.uid = function () {
+  if (window.crypto && typeof window.crypto.randomUUID === "function") {
+    try { return window.crypto.randomUUID(); } catch (e) { /* repli ci-dessous */ }
+  }
+  var t = Date.now().toString(36);
+  var r = Math.random().toString(36).slice(2, 10);
+  return t + "-" + r;
+};
+
+/* Échelles d'état — jamais interchangeables. */
+PL.ETATS_BATI = [
+  { code: "N", libelle: "Neuf" },
+  { code: "B", libelle: "Bon" },
+  { code: "M", libelle: "Mauvais" }
+];
+
+PL.ETATS_MOBILIER = [
+  { code: "TB", libelle: "Très bon" },
+  { code: "B", libelle: "Bon" },
+  { code: "P", libelle: "Passable" },
+  { code: "M", libelle: "Mauvais" }
+];
+
+/* Rang croissant = dégradation. Sert au calcul des écarts entrée/sortie. */
+PL.RANG_BATI = { N: 0, B: 1, M: 2 };
+PL.RANG_MOBILIER = { TB: 0, B: 1, P: 2, M: 3 };
+
+PL.SUPPORTS = [
+  { cle: "plafond", libelle: "Plafond" },
+  { cle: "murs", libelle: "Murs" },
+  { cle: "sol", libelle: "Sol" }
+];
+
+PL.REVETEMENTS = [
+  "Peinture", "Papier peint", "Toile de verre", "Enduit", "Lambris",
+  "Carrelage", "Faïence", "Moquette", "Parquet", "Stratifié", "Lino", "Béton ciré"
+];
+
+PL.DEFAULTS = {};
+
+/* Pièces de l'état des lieux (le papier prévoit en plus des lignes libres,
+   remplacées ici par « Ajouter une pièce »). */
+PL.DEFAULTS.pieces = [
+  "Entrée", "Salon", "Salle à manger", "Cuisine",
+  "Chambre 1", "Chambre 2", "Salle d'eau", "WC"
+];
+
+PL.DEFAULTS.compteurs = [
+  { cle: "eauFroide", libelle: "Eau froide", unite: "m³" },
+  { cle: "eauChaude", libelle: "Eau chaude", unite: "m³" },
+  { cle: "gaz", libelle: "Gaz", unite: "m³" },
+  { cle: "elecHP", libelle: "Électricité — heures pleines", unite: "kWh" },
+  { cle: "elecHC", libelle: "Électricité — heures creuses", unite: "kWh" }
+];
+
+PL.DEFAULTS.chauffageModes = ["Individuel", "Collectif"];
+PL.DEFAULTS.chauffageEnergies = ["Gaz", "Fioul", "Électrique", "Pompe à chaleur", "Bois"];
+
+PL.DEFAULTS.equipements = {
+  cuisine: [
+    "Évier", "Robinetterie", "Plaque(s) de cuisson", "Four", "Hotte",
+    "Lave-vaisselle", "Réfrigérateur", "Machine à laver", "Luminaires"
+  ],
+  salleDEau: [
+    "Lavabo", "Robinetterie lavabo", "Meuble vasque / miroir", "Douche",
+    "Baignoire", "Robinetterie douche/bain", "Flexible", "Meuble de rangement",
+    "Miroir fixe", "Luminaires"
+  ],
+  wc: [
+    "Chasse d'eau", "Lunette et abattant", "Meuble de rangement", "Luminaire"
+  ]
+};
+
+/* Sections de l'inventaire mobilier — annexe obligatoire du bail meublé. */
+PL.DEFAULTS.sections = [
+  {
+    titre: "Séjour / Salle à manger",
+    lignes: [
+      "Canapé(s)", "Fauteuils", "Table basse", "Table repas", "Chaises",
+      "Bibliothèque", "Buffet", "Meuble TV", "Lampes / Appliques"
+    ]
+  },
+  {
+    titre: "Chambre 1",
+    lignes: [
+      "Lit (dimensions en cm)", "Sommiers", "Matelas", "Protège-matelas",
+      "Penderie / Armoire", "Table(s) de nuit"
+    ]
+  },
+  {
+    titre: "Chambre 2",
+    lignes: [
+      "Lit (dimensions en cm)", "Sommiers", "Matelas", "Protège-matelas",
+      "Penderie / Armoire", "Table(s) de nuit"
+    ]
+  },
+  {
+    titre: "Salle(s) d'eau / bain",
+    lignes: [
+      "Rideau ou paroi de douche", "Meubles vasque",
+      "Accessoires (porte-serviette, tapis, poubelles, etc.)"
+    ]
+  },
+  {
+    titre: "Électroménager complémentaire",
+    lignes: [
+      "Lave-linge", "Aspirateur", "Sèche-linge", "Lave-vaisselle",
+      "Fer et planche à repasser"
+    ]
+  },
+  {
+    titre: "Cuisine",
+    lignes: [
+      "Réfrigérateur", "Congélateur", "Plaques de cuisson (nombre de feux)",
+      "Four / Four micro-ondes", "Hotte", "Bouilloire", "Grille-pain", "Cafetière",
+      "Casseroles", "Poêles", "Assiettes", "Verres", "Bols", "Tasses",
+      "Autres éléments de vaisselle (à préciser en observations)", "Table(s)", "Chaises"
+    ]
+  },
+  {
+    titre: "Linge et divers",
+    lignes: [
+      "Couettes", "Oreillers", "Protège-oreillers", "Draps-housses",
+      "Housses de couette", "Serviettes de toilette", "Torchons",
+      "Ustensiles divers (ouvre-boîtes, tire-bouchon, etc.)"
+    ]
+  }
+];
+
+/* --- fabriques ------------------------------------------------------ */
+
+function nouveauSupport() {
+  return {
+    revetement: "",
+    etatEntree: null,
+    etatSortie: null,
+    remarqueEntree: "",
+    remarqueSortie: ""
+  };
+}
+
+PL.nouvellePiece = function (nom, supprimable) {
+  var piece = {
+    id: PL.uid(),
+    nom: nom,
+    supprimable: supprimable !== false,
+    supports: {},
+    photos: { entree: [], sortie: [] }
+  };
+  PL.SUPPORTS.forEach(function (s) { piece.supports[s.cle] = nouveauSupport(); });
+  return piece;
+};
+
+PL.nouvelleLigne = function (libelle) {
+  return {
+    id: PL.uid(),
+    libelle: libelle,
+    qte: "",
+    absent: false,
+    etatEntree: null,
+    etatSortie: null,
+    observations: "",
+    photos: { entree: [], sortie: [] }
+  };
+};
+
+PL.nouvelleSection = function (titre, lignes) {
+  return {
+    id: PL.uid(),
+    titre: titre,
+    lignes: (lignes || []).map(PL.nouvelleLigne)
+  };
+};
+
+function nouveauxCompteurs() {
+  var c = { libres: [] };
+  PL.DEFAULTS.compteurs.forEach(function (m) {
+    c[m.cle] = { valeur: "", photos: [] };
+  });
+  return c;
+}
+
+function nouveauDivers() {
+  return {
+    cles: [{ id: PL.uid(), nombre: "", usage: "" }],
+    detecteurs: { nombre: "", testRealise: false },
+    receptionTV: "",
+    boiteAuxLettres: false,
+    sonnette: false,
+    interphone: false,
+    note: ""
+  };
+}
+
+function nouvelleCampagne() {
+  return {
+    date: "",
+    lieu: "",
+    nbExemplaires: "2",
+    nomBailleur: "",
+    nomLocataire: "",
+    signatureBailleur: "",
+    signatureLocataire: "",
+    signeLe: null,
+    verrouille: false
+  };
+}
+
+function nouveauxEquipements() {
+  var out = {};
+  Object.keys(PL.DEFAULTS.equipements).forEach(function (bloc) {
+    out[bloc] = PL.DEFAULTS.equipements[bloc].map(function (libelle) {
+      return {
+        id: PL.uid(),
+        libelle: libelle,
+        presentEntree: false,
+        presentSortie: false,
+        precision: ""
+      };
+    });
+  });
+  return out;
+}
+
+PL.nouveauDossier = function () {
+  var maintenant = new Date().toISOString();
+  return {
+    id: PL.uid(),
+    schemaVersion: PL.SCHEMA_VERSION,
+    creeLe: maintenant,
+    modifieLe: maintenant,
+    archive: false,
+    logement: { adresse: "", batiment: "", escalier: "", etage: "", porte: "" },
+    bailleur: { nom: "", adresse: "" },
+    locataire: { nom: "", adresseEntree: "", adresseSortie: "" },
+    campagnes: { entree: nouvelleCampagne(), sortie: nouvelleCampagne() },
+    edl: {
+      compteurs: { entree: nouveauxCompteurs(), sortie: nouveauxCompteurs() },
+      chauffage: { mode: "", energie: "", nbRadiateurs: "", eauChaude: "", note: "" },
+      divers: { entree: nouveauDivers(), sortie: nouveauDivers() },
+      pieces: PL.DEFAULTS.pieces.map(function (nom) { return PL.nouvellePiece(nom, true); }),
+      equipements: nouveauxEquipements()
+    },
+    mobilier: {
+      sections: PL.DEFAULTS.sections.map(function (s) {
+        return PL.nouvelleSection(s.titre, s.lignes);
+      })
+    },
+    observations: { entree: "", sortie: "" }
+  };
+};
+
+
+/* === 40-store.js === */
+/* ------------------------------------------------------------------
+   Store : état des dossiers, auto-save, export/import.
+   Ne connaît ni le DOM ni la mise en page.
+   ------------------------------------------------------------------ */
+
+(function () {
+  var CLE = "potentia-loan:v1";
+  var QUOTA_ESTIME = 5 * 1024 * 1024; /* borne basse usuelle de localStorage */
+
+  var etat = { schemaVersion: PL.SCHEMA_VERSION, dossiers: {} };
+  var abonnes = [];
+  var derniereErreur = null;
+
+  function charger() {
+    var brut;
+    try {
+      brut = window.localStorage.getItem(CLE);
+    } catch (e) {
+      derniereErreur = "Stockage local indisponible. Les données ne seront pas conservées.";
+      return;
+    }
+    if (!brut) return;
+    try {
+      var lu = JSON.parse(brut);
+      if (lu && lu.dossiers) {
+        etat.dossiers = lu.dossiers;
+        etat.schemaVersion = lu.schemaVersion || PL.SCHEMA_VERSION;
+      }
+    } catch (e) {
+      derniereErreur = "Données locales illisibles ; elles ont été conservées mais ignorées.";
+    }
+  }
+
+  function sauver() {
+    try {
+      window.localStorage.setItem(CLE, JSON.stringify(etat));
+      derniereErreur = null;
+      return { ok: true };
+    } catch (e) {
+      var quota = e && (e.name === "QuotaExceededError" ||
+        e.name === "NS_ERROR_DOM_QUOTA_REACHED" || e.code === 22);
+      derniereErreur = quota
+        ? "Stockage saturé : la dernière modification n'a pas pu être enregistrée. " +
+          "Exportez puis archivez un dossier, ou supprimez des photos."
+        : "Enregistrement impossible : " + (e && e.message ? e.message : "erreur inconnue");
+      return { ok: false, erreur: derniereErreur };
+    }
+  }
+
+  function notifier() {
+    abonnes.forEach(function (cb) {
+      try { cb(); } catch (e) { /* un abonné défaillant ne bloque pas les autres */ }
+    });
+  }
+
+  /* --- progression ------------------------------------------------ */
+
+  function compterSupports(dossier, mode) {
+    var champ = mode === "sortie" ? "etatSortie" : "etatEntree";
+    var total = 0, faits = 0;
+    dossier.edl.pieces.forEach(function (p) {
+      PL.SUPPORTS.forEach(function (s) {
+        total++;
+        if (p.supports[s.cle][champ]) faits++;
+      });
+    });
+    return { total: total, faits: faits };
+  }
+
+  function compterMobilier(dossier, mode) {
+    var champ = mode === "sortie" ? "etatSortie" : "etatEntree";
+    var total = 0, faits = 0;
+    dossier.mobilier.sections.forEach(function (sec) {
+      sec.lignes.forEach(function (l) {
+        total++;
+        if (l.absent || l[champ]) faits++;
+      });
+    });
+    return { total: total, faits: faits };
+  }
+
+  function compterRemplis(valeurs) {
+    var total = valeurs.length, faits = 0;
+    valeurs.forEach(function (v) { if (String(v == null ? "" : v).trim() !== "") faits++; });
+    return { total: total, faits: faits };
+  }
+
+  PL.progression = function (dossier, mode) {
+    var camp = dossier.campagnes[mode];
+    var compteurs = dossier.edl.compteurs[mode];
+    var identite = compterRemplis([
+      dossier.logement.adresse, dossier.bailleur.nom, dossier.bailleur.adresse,
+      dossier.locataire.nom, camp.date, camp.lieu
+    ]);
+    var compteursCpt = compterRemplis(PL.DEFAULTS.compteurs.map(function (m) {
+      return compteurs[m.cle].valeur;
+    }));
+    var chauffage = compterRemplis([dossier.edl.chauffage.mode, dossier.edl.chauffage.energie]);
+    var equipTotal = 0, equipFaits = 0;
+    Object.keys(dossier.edl.equipements).forEach(function (bloc) {
+      dossier.edl.equipements[bloc].forEach(function (eq) {
+        equipTotal++;
+        if (eq[mode === "sortie" ? "presentSortie" : "presentEntree"]) equipFaits++;
+      });
+    });
+    var signatures = compterRemplis([
+      camp.signatureBailleur || camp.nomBailleur,
+      camp.signatureLocataire || camp.nomLocataire
+    ]);
+
+    var sections = {
+      identite: identite,
+      compteurs: compteursCpt,
+      technique: chauffage,
+      pieces: compterSupports(dossier, mode),
+      equipements: { total: equipTotal, faits: equipFaits },
+      mobilier: compterMobilier(dossier, mode),
+      signatures: signatures
+    };
+
+    var total = 0, faits = 0;
+    /* les équipements sont des cases facultatives : hors du calcul global */
+    ["identite", "compteurs", "technique", "pieces", "mobilier", "signatures"]
+      .forEach(function (k) { total += sections[k].total; faits += sections[k].faits; });
+
+    sections.global = {
+      total: total,
+      faits: faits,
+      pourcent: total ? Math.round((faits / total) * 100) : 0
+    };
+    return sections;
+  };
+
+  /* --- validation d'import ---------------------------------------- */
+
+  function valider(objet) {
+    if (!objet || typeof objet !== "object") return "Fichier illisible.";
+    if (!objet.schemaVersion) return "Fichier non reconnu : version de schéma absente.";
+    if (objet.schemaVersion > PL.SCHEMA_VERSION) {
+      return "Ce dossier a été créé avec une version plus récente de Potentia Loan.";
+    }
+    var requis = ["logement", "bailleur", "locataire", "campagnes", "edl", "mobilier"];
+    for (var i = 0; i < requis.length; i++) {
+      if (!objet[requis[i]]) return "Structure incomplète : section « " + requis[i] + " » manquante.";
+    }
+    if (!Array.isArray(objet.edl.pieces) || !Array.isArray(objet.mobilier.sections)) {
+      return "Structure incomplète : pièces ou sections d'inventaire absentes.";
+    }
+    return null;
+  }
+
+  /* Complète un dossier importé ou ancien avec les champs manquants,
+     sans jamais écraser une valeur existante. */
+  function migrer(dossier) {
+    var modele = PL.nouveauDossier();
+    function fusion(cible, ref) {
+      Object.keys(ref).forEach(function (k) {
+        if (cible[k] === undefined || cible[k] === null) {
+          cible[k] = ref[k];
+        } else if (
+          typeof ref[k] === "object" && !Array.isArray(ref[k]) && ref[k] !== null &&
+          typeof cible[k] === "object" && !Array.isArray(cible[k])
+        ) {
+          fusion(cible[k], ref[k]);
+        }
+      });
+      return cible;
+    }
+    ["logement", "bailleur", "locataire", "campagnes", "observations"].forEach(function (k) {
+      dossier[k] = fusion(dossier[k] || {}, modele[k]);
+    });
+    dossier.edl = fusion(dossier.edl || {}, {
+      compteurs: modele.edl.compteurs,
+      chauffage: modele.edl.chauffage,
+      divers: modele.edl.divers,
+      equipements: modele.edl.equipements
+    });
+    dossier.edl.pieces = (dossier.edl.pieces || []).map(function (p) {
+      p.photos = p.photos || { entree: [], sortie: [] };
+      p.supports = p.supports || {};
+      PL.SUPPORTS.forEach(function (s) {
+        p.supports[s.cle] = fusion(p.supports[s.cle] || {}, {
+          revetement: "", etatEntree: null, etatSortie: null,
+          remarqueEntree: "", remarqueSortie: ""
+        });
+      });
+      if (!p.id) p.id = PL.uid();
+      return p;
+    });
+    dossier.mobilier.sections.forEach(function (sec) {
+      if (!sec.id) sec.id = PL.uid();
+      sec.lignes = (sec.lignes || []).map(function (l) {
+        l.photos = l.photos || { entree: [], sortie: [] };
+        if (!l.id) l.id = PL.uid();
+        return fusion(l, {
+          libelle: "", qte: "", absent: false, etatEntree: null,
+          etatSortie: null, observations: ""
+        });
+      });
+    });
+    dossier.schemaVersion = PL.SCHEMA_VERSION;
+    return dossier;
+  }
+
+  /* --- titre lisible d'un dossier --------------------------------- */
+
+  function titre(dossier) {
+    var a = (dossier.logement.adresse || "").trim();
+    if (a) return a.split("\n")[0];
+    var l = (dossier.locataire.nom || "").trim();
+    if (l) return "Dossier — " + l;
+    return "Dossier sans adresse";
+  }
+
+  /* --- interface publique ------------------------------------------ */
+
+  PL.store = {
+    list: function () {
+      return Object.keys(etat.dossiers)
+        .map(function (id) {
+          var d = etat.dossiers[id];
+          return {
+            id: id,
+            titre: titre(d),
+            locataire: (d.locataire.nom || "").trim(),
+            modifieLe: d.modifieLe,
+            archive: !!d.archive,
+            signeEntree: !!d.campagnes.entree.signeLe,
+            signeSortie: !!d.campagnes.sortie.signeLe,
+            avancement: PL.progression(d, d.campagnes.sortie.signeLe ||
+              d.campagnes.entree.signeLe ? "sortie" : "entree").global.pourcent
+          };
+        })
+        .sort(function (a, b) { return (b.modifieLe || "").localeCompare(a.modifieLe || ""); });
+    },
+
+    get: function (id) { return etat.dossiers[id] || null; },
+
+    create: function () {
+      var d = PL.nouveauDossier();
+      etat.dossiers[d.id] = d;
+      sauver();
+      notifier();
+      return d.id;
+    },
+
+    patch: function (id, fn) {
+      var d = etat.dossiers[id];
+      if (!d) return { ok: false, erreur: "Dossier introuvable." };
+      fn(d);
+      d.modifieLe = new Date().toISOString();
+      var res = sauver();
+      notifier();
+      return res;
+    },
+
+    remove: function (id) {
+      var d = etat.dossiers[id];
+      if (d && PL.photos) PL.photos.purgerDossier(d);
+      delete etat.dossiers[id];
+      sauver();
+      notifier();
+    },
+
+    duplicate: function (id) {
+      var src = etat.dossiers[id];
+      if (!src) return null;
+      var copie = JSON.parse(JSON.stringify(src));
+      copie.id = PL.uid();
+      copie.creeLe = copie.modifieLe = new Date().toISOString();
+      copie.campagnes.entree.signeLe = null;
+      copie.campagnes.entree.verrouille = false;
+      copie.campagnes.entree.signatureBailleur = "";
+      copie.campagnes.entree.signatureLocataire = "";
+      copie.campagnes.sortie = JSON.parse(JSON.stringify(copie.campagnes.entree));
+      etat.dossiers[copie.id] = copie;
+      sauver();
+      notifier();
+      return copie.id;
+    },
+
+    /* L'export embarque les photos : sans elles, un dossier rouvert sur un
+       autre appareil perdrait ses clichés d'entrée, et donc la comparaison
+       avant/après du récapitulatif des écarts. */
+    exportJSON: function (id) {
+      var d = etat.dossiers[id];
+      if (!d) return Promise.resolve({ ok: false, erreur: "Dossier introuvable." });
+
+      var ids = PL.photos.idsDuDossier(d);
+      return Promise.all(ids.map(function (pid) {
+        return PL.photos.get(pid).then(function (data) {
+          return data ? [pid, data] : null;
+        });
+      })).then(function (paires) {
+        var copie = JSON.parse(JSON.stringify(d));
+        copie.photosIncluses = {};
+        paires.filter(Boolean).forEach(function (p) { copie.photosIncluses[p[0]] = p[1]; });
+
+        var nom = "potentia-loan-" +
+          titre(d).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 48) +
+          ".json";
+        var blob = new Blob([JSON.stringify(copie, null, 2)], { type: "application/json" });
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.href = url;
+        a.download = nom || "potentia-loan.json";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
+        return { ok: true, photos: paires.filter(Boolean).length, octets: blob.size };
+      });
+    },
+
+    importJSON: function (texte) {
+      var objet;
+      try {
+        objet = JSON.parse(texte);
+      } catch (e) {
+        return { ok: false, erreur: "Ce fichier n'est pas un JSON valide." };
+      }
+      var erreur = valider(objet);
+      if (erreur) return { ok: false, erreur: erreur };
+
+      /* Photos embarquées : réinjectées dans IndexedDB sous leur identifiant
+         d'origine, pour que les références du dossier restent valides. */
+      var photos = objet.photosIncluses || {};
+      delete objet.photosIncluses;
+      var nbPhotos = Object.keys(photos).length;
+      Object.keys(photos).forEach(function (pid) {
+        PL.photos.restaurer(pid, photos[pid]);
+      });
+
+      var dossier = migrer(objet);
+      if (!dossier.id || etat.dossiers[dossier.id]) dossier.id = PL.uid();
+      dossier.modifieLe = new Date().toISOString();
+      etat.dossiers[dossier.id] = dossier;
+      var res = sauver();
+      if (!res.ok) {
+        delete etat.dossiers[dossier.id];
+        return { ok: false, erreur: res.erreur };
+      }
+      notifier();
+      return { ok: true, id: dossier.id, photos: nbPhotos };
+    },
+
+    usage: function () {
+      var octets = 0;
+      try {
+        var brut = window.localStorage.getItem(CLE);
+        octets = brut ? new Blob([brut]).size : 0;
+      } catch (e) { octets = 0; }
+      return {
+        octets: octets,
+        pourcent: Math.min(100, Math.round((octets / QUOTA_ESTIME) * 100))
+      };
+    },
+
+    erreur: function () { return derniereErreur; },
+
+    onChange: function (cb) {
+      abonnes.push(cb);
+      return function () {
+        var i = abonnes.indexOf(cb);
+        if (i >= 0) abonnes.splice(i, 1);
+      };
+    }
+  };
+
+  charger();
+})();
+
+
+/* === 45-photos.js === */
+/* ------------------------------------------------------------------
+   Photos : compression <canvas> + stockage IndexedDB.
+   localStorage est trop étroit pour des images ; IndexedDB accepte
+   plusieurs centaines de mégaoctets.
+   ------------------------------------------------------------------ */
+
+(function () {
+  var NOM_BASE = "potentia-loan-photos";
+  var MAGASIN = "photos";
+  var COTE_MAX = 1280;
+  var QUALITE = 0.72;
+
+  var basePromesse = null;
+  var supporte = true;
+  var cache = {}; /* id -> dataURL, pour éviter de relire à chaque rendu */
+
+  function ouvrir() {
+    if (basePromesse) return basePromesse;
+    basePromesse = new Promise(function (resoudre, rejeter) {
+      if (!window.indexedDB) { supporte = false; rejeter(new Error("IndexedDB absent")); return; }
+      var req;
+      try {
+        req = window.indexedDB.open(NOM_BASE, 1);
+      } catch (e) { supporte = false; rejeter(e); return; }
+      req.onupgradeneeded = function () {
+        var db = req.result;
+        if (!db.objectStoreNames.contains(MAGASIN)) {
+          db.createObjectStore(MAGASIN, { keyPath: "id" });
+        }
+      };
+      req.onsuccess = function () { resoudre(req.result); };
+      req.onerror = function () { supporte = false; rejeter(req.error || new Error("IndexedDB refusé")); };
+      req.onblocked = function () { rejeter(new Error("IndexedDB bloqué")); };
+    });
+    return basePromesse;
+  }
+
+  function transaction(mode, action) {
+    return ouvrir().then(function (db) {
+      return new Promise(function (resoudre, rejeter) {
+        var tx = db.transaction(MAGASIN, mode);
+        var magasin = tx.objectStore(MAGASIN);
+        var resultat;
+        try { resultat = action(magasin); } catch (e) { rejeter(e); return; }
+        tx.oncomplete = function () {
+          resoudre(resultat && resultat.result !== undefined ? resultat.result : resultat);
+        };
+        tx.onerror = function () { rejeter(tx.error); };
+        tx.onabort = function () { rejeter(tx.error || new Error("Transaction interrompue")); };
+      });
+    });
+  }
+
+  function chargerImage(fichier) {
+    if (window.createImageBitmap) {
+      return window.createImageBitmap(fichier, { imageOrientation: "from-image" })
+        .catch(function () { return chargerViaBalise(fichier); });
+    }
+    return chargerViaBalise(fichier);
+  }
+
+  function chargerViaBalise(fichier) {
+    return new Promise(function (resoudre, rejeter) {
+      var url = URL.createObjectURL(fichier);
+      var img = new Image();
+      img.onload = function () { URL.revokeObjectURL(url); resoudre(img); };
+      img.onerror = function () { URL.revokeObjectURL(url); rejeter(new Error("Image illisible")); };
+      img.src = url;
+    });
+  }
+
+  function compresser(fichier) {
+    return chargerImage(fichier).then(function (source) {
+      var l = source.width || source.naturalWidth;
+      var h = source.height || source.naturalHeight;
+      if (!l || !h) throw new Error("Dimensions d'image inconnues");
+      var ratio = Math.min(1, COTE_MAX / Math.max(l, h));
+      var largeur = Math.max(1, Math.round(l * ratio));
+      var hauteur = Math.max(1, Math.round(h * ratio));
+      var canvas = document.createElement("canvas");
+      canvas.width = largeur;
+      canvas.height = hauteur;
+      var ctx = canvas.getContext("2d");
+      ctx.fillStyle = "#ffffff";
+      ctx.fillRect(0, 0, largeur, hauteur);
+      ctx.drawImage(source, 0, 0, largeur, hauteur);
+      if (source.close) source.close();
+      return new Promise(function (resoudre) {
+        if (canvas.toBlob) {
+          canvas.toBlob(function (blob) {
+            resoudre({ blob: blob, largeur: largeur, hauteur: hauteur });
+          }, "image/jpeg", QUALITE);
+        } else {
+          var dataURL = canvas.toDataURL("image/jpeg", QUALITE);
+          resoudre({ dataURL: dataURL, largeur: largeur, hauteur: hauteur });
+        }
+      });
+    });
+  }
+
+  function blobVersDataURL(blob) {
+    return new Promise(function (resoudre, rejeter) {
+      var fr = new FileReader();
+      fr.onload = function () { resoudre(fr.result); };
+      fr.onerror = function () { rejeter(fr.error); };
+      fr.readAsDataURL(blob);
+    });
+  }
+
+  PL.photos = {
+    disponible: function () {
+      return ouvrir().then(function () { return true; }).catch(function () { return false; });
+    },
+
+    supporteSync: function () { return supporte; },
+
+    put: function (fichier) {
+      return compresser(fichier).then(function (r) {
+        var id = PL.uid();
+        var enregistrement = {
+          id: id,
+          largeur: r.largeur,
+          hauteur: r.hauteur,
+          creeLe: new Date().toISOString()
+        };
+        if (r.blob) {
+          enregistrement.blob = r.blob;
+          enregistrement.octets = r.blob.size;
+        } else {
+          enregistrement.dataURL = r.dataURL;
+          enregistrement.octets = Math.round(r.dataURL.length * 0.75);
+        }
+        return transaction("readwrite", function (m) { m.put(enregistrement); })
+          .then(function () {
+            return {
+              id: id,
+              largeur: r.largeur,
+              hauteur: r.hauteur,
+              octets: enregistrement.octets
+            };
+          });
+      });
+    },
+
+    get: function (id) {
+      if (cache[id]) return Promise.resolve(cache[id]);
+      return transaction("readonly", function (m) { return m.get(id); })
+        .then(function (enr) {
+          if (!enr) return null;
+          if (enr.dataURL) { cache[id] = enr.dataURL; return enr.dataURL; }
+          return blobVersDataURL(enr.blob).then(function (d) { cache[id] = d; return d; });
+        })
+        .catch(function () { return null; });
+    },
+
+    del: function (id) {
+      delete cache[id];
+      return transaction("readwrite", function (m) { m.delete(id); }).catch(function () {});
+    },
+
+    usage: function () {
+      return transaction("readonly", function (m) { return m.getAll(); })
+        .then(function (tout) {
+          return (tout || []).reduce(function (somme, e) { return somme + (e.octets || 0); }, 0);
+        })
+        .catch(function () { return 0; });
+    },
+
+    /* Réinsère une photo sous un identifiant imposé (restauration d'import). */
+    restaurer: function (id, dataURL) {
+      cache[id] = dataURL;
+      return transaction("readwrite", function (m) {
+        m.put({
+          id: id, dataURL: dataURL,
+          octets: Math.round(dataURL.length * 0.75),
+          creeLe: new Date().toISOString()
+        });
+      }).catch(function () {});
+    },
+
+    /* Tous les identifiants de photos référencés par un dossier. */
+    idsDuDossier: function (dossier) {
+      var ids = [];
+      function collecter(bloc) {
+        if (!bloc) return;
+        ["entree", "sortie"].forEach(function (c) {
+          (bloc[c] || []).forEach(function (p) { if (p && p.id) ids.push(p.id); });
+        });
+      }
+      (dossier.edl.pieces || []).forEach(function (p) { collecter(p.photos); });
+      (dossier.mobilier.sections || []).forEach(function (s) {
+        (s.lignes || []).forEach(function (l) { collecter(l.photos); });
+      });
+      ["entree", "sortie"].forEach(function (c) {
+        var cpt = dossier.edl.compteurs && dossier.edl.compteurs[c];
+        if (!cpt) return;
+        PL.DEFAULTS.compteurs.forEach(function (m) {
+          ((cpt[m.cle] && cpt[m.cle].photos) || []).forEach(function (p) {
+            if (p && p.id) ids.push(p.id);
+          });
+        });
+      });
+      return ids;
+    },
+
+    /* Supprime toutes les photos référencées par un dossier que l'on efface. */
+    purgerDossier: function (dossier) {
+      PL.photos.idsDuDossier(dossier).forEach(function (id) { PL.photos.del(id); });
+    }
+  };
+})();
+
+
+/* === 50-ui.js === */
+/* ------------------------------------------------------------------
+   Socle d'interface : fabrique d'éléments, composants de saisie,
+   routeur, dialogues. Aucune connaissance du métier.
+   ------------------------------------------------------------------ */
+
+PL.el = function (tag, props) {
+  var n = document.createElement(tag);
+  var enfants = Array.prototype.slice.call(arguments, 2);
+  if (props) {
+    Object.keys(props).forEach(function (k) {
+      var v = props[k];
+      if (v === null || v === undefined || v === false) return;
+      if (k === "class") n.className = v;
+      else if (k === "texte") n.textContent = v;
+      else if (k.slice(0, 2) === "on" && typeof v === "function") {
+        n.addEventListener(k.slice(2).toLowerCase(), v);
+      } else if (k === "dataset") {
+        Object.keys(v).forEach(function (d) { n.dataset[d] = v[d]; });
+      } else if (k in n && k !== "list" && typeof v !== "object") {
+        try { n[k] = v; } catch (e) { n.setAttribute(k, v); }
+      } else {
+        n.setAttribute(k, v === true ? "" : v);
+      }
+    });
+  }
+  enfants.forEach(function ajouter(c) {
+    if (c === null || c === undefined || c === false) return;
+    if (Array.isArray(c)) { c.forEach(ajouter); return; }
+    n.appendChild(typeof c === "object" ? c : document.createTextNode(String(c)));
+  });
+  return n;
+};
+
+PL.vider = function (n) { while (n.firstChild) n.removeChild(n.firstChild); return n; };
+
+PL.annoncer = function (message) {
+  var z = document.getElementById("zone-annonces");
+  if (z) { z.textContent = ""; setTimeout(function () { z.textContent = message; }, 30); }
+};
+
+var minuteurToast = null;
+PL.toast = function (message) {
+  var ancien = document.querySelector(".toast");
+  if (ancien) ancien.remove();
+  var t = PL.el("div", { class: "toast", role: "status" }, message);
+  document.body.appendChild(t);
+  clearTimeout(minuteurToast);
+  minuteurToast = setTimeout(function () { t.remove(); }, 3800);
+};
+
+/* --- champs -------------------------------------------------------- */
+
+PL.champ = function (o) {
+  var saisie;
+  if (o.multiligne) {
+    saisie = PL.el("textarea", {
+      value: o.valeur || "", rows: o.rows || 3,
+      placeholder: o.placeholder || "", disabled: !!o.lecture
+    });
+  } else {
+    saisie = PL.el("input", {
+      type: o.type || "text",
+      value: o.valeur == null ? "" : o.valeur,
+      inputmode: o.type === "number" ? "decimal" : null,
+      placeholder: o.placeholder || "",
+      list: o.liste || null,
+      disabled: !!o.lecture
+    });
+  }
+  saisie.addEventListener("input", function () { o.onChange(saisie.value); });
+  var id = "c" + PL.uid().slice(0, 8);
+  saisie.id = id;
+  return PL.el("label", { class: "champ" + (o.large ? " champ--large" : ""), "for": id },
+    PL.el("span", { class: "champ__label" }, o.label),
+    PL.el("span", { class: "champ__saisie" },
+      saisie,
+      o.suffixe ? PL.el("span", { class: "champ__suffixe" }, o.suffixe) : null
+    )
+  );
+};
+
+PL.datalist = function (id, valeurs) {
+  return PL.el("datalist", { id: id },
+    valeurs.map(function (v) { return PL.el("option", { value: v }); }));
+};
+
+PL.caseACocher = function (o) {
+  var input = PL.el("input", { type: "checkbox", checked: !!o.coche, disabled: !!o.lecture });
+  var wrap = PL.el("label", { class: "case" + (o.coche ? " case--cochee" : "") },
+    input, PL.el("span", null, o.label));
+  input.addEventListener("change", function () {
+    wrap.classList.toggle("case--cochee", input.checked);
+    o.onChange(input.checked);
+  });
+  return wrap;
+};
+
+/* --- sélecteur d'état segmenté -------------------------------------- */
+
+PL.segmente = function (o) {
+  var groupe = PL.el("div", {
+    class: "segmente" + (o.desactive ? " segmente--desactive" : ""),
+    role: "radiogroup",
+    "aria-label": o.label
+  });
+  var boutons = [];
+
+  function majuscule(valeur) {
+    boutons.forEach(function (b) {
+      var actif = b.dataset.code === valeur;
+      b.setAttribute("aria-checked", actif ? "true" : "false");
+      b.tabIndex = actif || (!valeur && b === boutons[0]) ? 0 : -1;
+    });
+  }
+
+  o.options.forEach(function (opt) {
+    var b = PL.el("button", {
+      type: "button", class: "segmente__opt", role: "radio",
+      "aria-checked": "false", "aria-label": opt.libelle,
+      title: opt.libelle, dataset: { code: opt.code }, disabled: !!o.lecture
+    }, opt.code);
+    b.addEventListener("click", function () {
+      var nouvelle = o.valeur === opt.code && o.effacable !== false ? null : opt.code;
+      o.valeur = nouvelle;
+      majuscule(nouvelle);
+      o.onChange(nouvelle);
+    });
+    b.addEventListener("keydown", function (e) {
+      var i = boutons.indexOf(b), suivant = null;
+      if (e.key === "ArrowRight" || e.key === "ArrowDown") suivant = boutons[(i + 1) % boutons.length];
+      if (e.key === "ArrowLeft" || e.key === "ArrowUp") suivant = boutons[(i - 1 + boutons.length) % boutons.length];
+      if (suivant) { e.preventDefault(); suivant.focus(); suivant.click(); }
+    });
+    boutons.push(b);
+    groupe.appendChild(b);
+  });
+
+  majuscule(o.valeur);
+  return groupe;
+};
+
+PL.etatLecture = function (code, prefixe) {
+  return PL.el("span", { class: "etat-lecture" },
+    PL.el("span", null, prefixe || "Entrée :"),
+    PL.el("span", { class: "etat-lecture__pastille" }, code || "—"));
+};
+
+/* --- dialogues ------------------------------------------------------ */
+
+PL.dialogue = function (o) {
+  var calque = PL.el("div", { class: "calque" });
+  var boite = PL.el("div", {
+    class: "dialogue", role: "dialog", "aria-modal": "true", "aria-label": o.titre
+  });
+  var focusPrecedent = document.activeElement;
+
+  function fermer() {
+    calque.remove();
+    document.removeEventListener("keydown", surTouche);
+    if (focusPrecedent && focusPrecedent.focus) focusPrecedent.focus();
+  }
+  function surTouche(e) {
+    if (e.key === "Escape") { e.preventDefault(); fermer(); }
+    if (e.key === "Tab") {
+      var cibles = boite.querySelectorAll("button, input, textarea, select, [href]");
+      if (!cibles.length) return;
+      var premier = cibles[0], dernier = cibles[cibles.length - 1];
+      if (e.shiftKey && document.activeElement === premier) { e.preventDefault(); dernier.focus(); }
+      else if (!e.shiftKey && document.activeElement === dernier) { e.preventDefault(); premier.focus(); }
+    }
+  }
+
+  boite.appendChild(PL.el("h2", { class: "dialogue__titre" }, o.titre));
+  if (o.corps) boite.appendChild(o.corps);
+  var actions = PL.el("div", { class: "dialogue__actions" });
+  (o.actions || []).forEach(function (a) {
+    actions.appendChild(PL.el("button", {
+      type: "button",
+      class: "btn" + (a.principal ? " btn--principal" : "") + (a.danger ? " btn--danger" : ""),
+      onclick: function () { if (!a.onClick || a.onClick() !== false) fermer(); }
+    }, a.libelle));
+  });
+  boite.appendChild(actions);
+  calque.appendChild(boite);
+  calque.addEventListener("mousedown", function (e) { if (e.target === calque) fermer(); });
+  document.addEventListener("keydown", surTouche);
+  document.getElementById("calque-dialogues").appendChild(calque);
+
+  var premierChamp = boite.querySelector("input, textarea, button");
+  if (premierChamp) premierChamp.focus();
+  return { fermer: fermer };
+};
+
+PL.confirmer = function (o) {
+  return new Promise(function (resoudre) {
+    PL.dialogue({
+      titre: o.titre,
+      corps: PL.el("p", null, o.message),
+      actions: [
+        { libelle: o.annuler || "Annuler", onClick: function () { resoudre(false); } },
+        {
+          libelle: o.valider || "Confirmer", principal: !o.danger, danger: !!o.danger,
+          onClick: function () { resoudre(true); }
+        }
+      ]
+    });
+  });
+};
+
+PL.demanderTexte = function (o) {
+  return new Promise(function (resoudre) {
+    var valeur = o.valeur || "";
+    var corps = PL.champ({
+      label: o.label, valeur: valeur, large: true,
+      onChange: function (v) { valeur = v; }
+    });
+    PL.dialogue({
+      titre: o.titre,
+      corps: corps,
+      actions: [
+        { libelle: "Annuler", onClick: function () { resoudre(null); } },
+        {
+          libelle: o.valider || "Valider", principal: true,
+          onClick: function () { resoudre(valeur.trim() || null); }
+        }
+      ]
+    });
+  });
+};
+
+/* --- routeur -------------------------------------------------------- */
+
+(function () {
+  var routes = [];
+  var rendus = 0;
+
+  function analyser(hash) {
+    var chemin = (hash || "").replace(/^#/, "");
+    if (!chemin || chemin === "/") return { segments: [] };
+    return { segments: chemin.replace(/^\//, "").split("/").map(decodeURIComponent) };
+  }
+
+  function apparier(motif, segments) {
+    var parts = motif.replace(/^\//, "").split("/").filter(Boolean);
+    if (motif === "/" && segments.length === 0) return {};
+    if (parts.length !== segments.length) return null;
+    var params = {};
+    for (var i = 0; i < parts.length; i++) {
+      if (parts[i].charAt(0) === ":") params[parts[i].slice(1)] = segments[i];
+      else if (parts[i] !== segments[i]) return null;
+    }
+    return params;
+  }
+
+  function rendre() {
+    var vue = document.getElementById("vue");
+    var segments = analyser(window.location.hash).segments;
+    for (var i = 0; i < routes.length; i++) {
+      var params = apparier(routes[i].motif, segments);
+      if (params) {
+        PL.vider(vue);
+        var contenu;
+        try {
+          contenu = routes[i].rendu(params);
+        } catch (e) {
+          contenu = PL.el("div", { class: "note note--alerte" },
+            "Erreur d'affichage : " + (e && e.message ? e.message : e));
+          if (window.console) window.console.error(e);
+        }
+        if (contenu) vue.appendChild(contenu);
+        if (rendus++) vue.focus();
+        window.scrollTo(0, 0);
+        return;
+      }
+    }
+    window.location.hash = "#/";
+  }
+
+  PL.router = {
+    define: function (motif, rendu) { routes.push({ motif: motif, rendu: rendu }); },
+    go: function (chemin) {
+      if (("#" + chemin) === window.location.hash) rendre();
+      else window.location.hash = "#" + chemin;
+    },
+    rafraichir: rendre,
+    demarrer: function () {
+      window.addEventListener("hashchange", rendre);
+      rendre();
+    }
+  };
+})();
+
+/* --- bloc photos ----------------------------------------------------- */
+
+PL.blocPhotos = function (o) {
+  /* o : { liste, onChange(liste), lecture, label } */
+  var conteneur = PL.el("div", { class: "photos" });
+  var grille = PL.el("div", { class: "photos__grille" });
+
+  function peindre() {
+    PL.vider(grille);
+    (o.liste || []).forEach(function (ref) {
+      var vignette = PL.el("div", { class: "photo-vignette" });
+      PL.photos.get(ref.id).then(function (data) {
+        if (!data) {
+          vignette.appendChild(PL.el("span", { class: "champ__label" }, "image absente"));
+          return;
+        }
+        vignette.insertBefore(
+          PL.el("img", { src: data, alt: ref.legende || "Photo du constat" }),
+          vignette.firstChild
+        );
+      });
+      if (!o.lecture) {
+        vignette.appendChild(PL.el("button", {
+          type: "button", class: "photo-vignette__suppr",
+          "aria-label": "Supprimer cette photo",
+          onclick: function () {
+            PL.photos.del(ref.id);
+            o.liste.splice(o.liste.indexOf(ref), 1);
+            o.onChange(o.liste);
+            peindre();
+          }
+        }, "×"));
+      }
+      grille.appendChild(vignette);
+    });
+  }
+
+  conteneur.appendChild(grille);
+
+  if (!o.lecture) {
+    var input = PL.el("input", {
+      type: "file", accept: "image/*", capture: "environment", multiple: true
+    });
+    input.addEventListener("change", function () {
+      var fichiers = Array.prototype.slice.call(input.files || []);
+      input.value = "";
+      if (!fichiers.length) return;
+      PL.toast(fichiers.length > 1 ? "Traitement des photos…" : "Traitement de la photo…");
+      fichiers.reduce(function (chaine, f) {
+        return chaine.then(function () {
+          return PL.photos.put(f).then(function (meta) {
+            o.liste.push({ id: meta.id, legende: "" });
+          });
+        });
+      }, Promise.resolve())
+        .then(function () { o.onChange(o.liste); peindre(); PL.toast("Photo enregistrée."); })
+        .catch(function (e) {
+          PL.toast("Photo non enregistrée : " + (e && e.message ? e.message : "erreur"));
+        });
+    });
+    var bouton = PL.el("button", {
+      type: "button", class: "btn btn--petit",
+      onclick: function () { input.click(); }
+    }, "Ajouter une photo");
+    conteneur.appendChild(PL.el("div", { class: "photo-ajout" }, input, bouton));
+  }
+
+  peindre();
+  return conteneur;
+};
+
+/* --- utilitaires d'affichage ---------------------------------------- */
+
+PL.formaterDate = function (iso) {
+  if (!iso) return "—";
+  var d = new Date(iso);
+  if (isNaN(d.getTime())) return "—";
+  return d.toLocaleDateString("fr-FR") + " à " + d.toLocaleTimeString("fr-FR", {
+    hour: "2-digit", minute: "2-digit"
+  });
+};
+
+PL.formaterOctets = function (o) {
+  if (o < 1024) return o + " o";
+  if (o < 1024 * 1024) return Math.round(o / 1024) + " Ko";
+  return (o / (1024 * 1024)).toFixed(1) + " Mo";
+};
+
+PL.dateJour = function () {
+  var d = new Date();
+  return d.getFullYear() + "-" +
+    String(d.getMonth() + 1).padStart(2, "0") + "-" +
+    String(d.getDate()).padStart(2, "0");
+};
+
+PL.dateFr = function (isoCourt) {
+  if (!isoCourt) return "";
+  var p = String(isoCourt).split("-");
+  return p.length === 3 ? p[2] + "/" + p[1] + "/" + p[0] : isoCourt;
+};
+
+
+/* === 60-view-home.js === */
+/* ------------------------------------------------------------------
+   Écran d'accueil : liste des dossiers + helpers partagés par les vues.
+   ------------------------------------------------------------------ */
+
+PL.vues = PL.vues || {};
+
+PL.SECTIONS = [
+  { cle: "identite", titre: "Identité", sous: "Logement, bailleur, locataire" },
+  { cle: "compteurs", titre: "Compteurs", sous: "Relevés eau, gaz, électricité" },
+  { cle: "technique", titre: "Chauffage & divers", sous: "Chauffage, clés, sécurité" },
+  { cle: "pieces", titre: "Pièces", sous: "Plafond, murs, sol" },
+  { cle: "equipements", titre: "Équipements", sous: "Cuisine, salle d'eau, WC" },
+  { cle: "mobilier", titre: "Inventaire mobilier", sous: "Annexe du bail meublé" },
+  { cle: "signatures", titre: "Signatures", sous: "Lu et approuvé" }
+];
+
+PL.estVerrouille = function (dossier, mode) {
+  return !!dossier.campagnes[mode].verrouille;
+};
+
+PL.libelleMode = function (mode) {
+  return mode === "sortie" ? "Sortie" : "Entrée";
+};
+
+/* « de entrée » est fautif : l'élision se fait devant la voyelle. */
+PL.deMode = function (mode) {
+  return mode === "sortie" ? "de sortie" : "d'entrée";
+};
+
+/* En-tête commun aux vues d'une section de dossier. */
+PL.enteteDossier = function (dossier, mode, section) {
+  var verrou = PL.estVerrouille(dossier, mode);
+  var i = PL.SECTIONS.findIndex(function (s) { return s.cle === section.cle; });
+  var precedent = PL.SECTIONS[i - 1];
+  var suivant = PL.SECTIONS[i + 1];
+  var base = "/d/" + dossier.id + "/" + mode + "/";
+
+  return PL.el("div", null,
+    PL.el("div", { class: "vue-entete" },
+      PL.el("div", { class: "vue-entete__texte" },
+        PL.el("div", { class: "vue-entete__sur" },
+          PL.libelleMode(mode) + " · " + (dossier.logement.adresse || "adresse non renseignée")),
+        PL.el("h1", null, section.titre)
+      ),
+      PL.el("div", { class: "app-entete__actions" },
+        precedent ? PL.el("button", {
+          type: "button", class: "btn btn--petit",
+          onclick: function () { PL.router.go(base + precedent.cle); }
+        }, "‹ " + precedent.titre) : null,
+        suivant ? PL.el("button", {
+          type: "button", class: "btn btn--petit",
+          onclick: function () { PL.router.go(base + suivant.cle); }
+        }, suivant.titre + " ›") : null,
+        PL.el("button", {
+          type: "button", class: "btn btn--petit",
+          onclick: function () { PL.router.go("/d/" + dossier.id + "/" + mode); }
+        }, "Sommaire")
+      )
+    ),
+    verrou ? PL.el("div", { class: "note note--alerte" },
+      "Ce constat " + PL.deMode(mode) +
+      " est signé et verrouillé. Les champs sont en lecture seule.") : null
+  );
+};
+
+/* Pied de navigation identique en bas de chaque section. */
+PL.piedNavigation = function (dossier, mode, section) {
+  var i = PL.SECTIONS.findIndex(function (s) { return s.cle === section.cle; });
+  var suivant = PL.SECTIONS[i + 1];
+  var base = "/d/" + dossier.id + "/" + mode + "/";
+  return PL.el("div", { class: "barre-actions" },
+    PL.el("button", {
+      type: "button", class: "btn",
+      onclick: function () { PL.router.go("/d/" + dossier.id + "/" + mode); }
+    }, "Retour au sommaire"),
+    suivant ? PL.el("button", {
+      type: "button", class: "btn btn--principal",
+      onclick: function () { PL.router.go(base + suivant.cle); }
+    }, "Continuer : " + suivant.titre) : null
+  );
+};
+
+/* --- accueil --------------------------------------------------------- */
+
+PL.vues.accueil = function () {
+  var racine = PL.el("div", null);
+  var dossiers = PL.store.list();
+  var actifs = dossiers.filter(function (d) { return !d.archive; });
+  var archives = dossiers.filter(function (d) { return d.archive; });
+
+  racine.appendChild(PL.el("div", { class: "vue-entete" },
+    PL.el("div", { class: "vue-entete__texte" },
+      PL.el("div", { class: "vue-entete__sur" }, "Constats locatifs"),
+      PL.el("h1", null, "Mes dossiers")
+    ),
+    PL.el("div", { class: "app-entete__actions" },
+      PL.el("button", {
+        type: "button", class: "btn btn--principal",
+        onclick: function () {
+          var id = PL.store.create();
+          PL.router.go("/d/" + id + "/entree/identite");
+        }
+      }, "Nouveau dossier"),
+      boutonImport()
+    )
+  ));
+
+  var erreur = PL.store.erreur();
+  if (erreur) racine.appendChild(PL.el("div", { class: "note note--alerte" }, erreur));
+
+  if (!actifs.length && !archives.length) {
+    racine.appendChild(PL.el("div", { class: "etat-vide" },
+      PL.el("p", null, "Aucun dossier pour le moment."),
+      PL.el("p", null,
+        "Créez un dossier pour établir un état des lieux d'entrée, " +
+        "ou importez un dossier existant au format JSON.")
+    ));
+  } else {
+    racine.appendChild(liste(actifs));
+    if (archives.length) {
+      racine.appendChild(PL.el("h2", { style: "margin:22px 0 10px" },
+        "Archivés (" + archives.length + ")"));
+      racine.appendChild(liste(archives));
+    }
+  }
+
+  racine.appendChild(blocStockage());
+  racine.appendChild(PL.el("div", { class: "note" },
+    "Les dossiers sont enregistrés dans ce navigateur uniquement. " +
+    "Exportez-les en JSON pour les sauvegarder ou les transférer sur un autre appareil."));
+
+  return racine;
+
+  function liste(items) {
+    var ul = PL.el("div", { class: "liste-dossiers" });
+    items.forEach(function (d) { ul.appendChild(ligne(d)); });
+    return ul;
+  }
+
+  function ligne(d) {
+    var badges = PL.el("span", null,
+      d.signeEntree ? PL.el("span", { class: "badge badge--signe" }, "Entrée signée") : null,
+      " ",
+      d.signeSortie ? PL.el("span", { class: "badge badge--sortie" }, "Sortie signée") : null
+    );
+    return PL.el("div", { class: "dossier-ligne" },
+      PL.el("div", { class: "dossier-ligne__info" },
+        PL.el("div", { class: "dossier-ligne__titre" }, d.titre),
+        PL.el("div", { class: "dossier-ligne__meta" },
+          (d.locataire ? d.locataire + " · " : "") +
+          "modifié le " + PL.formaterDate(d.modifieLe) + " · " + d.avancement + " %"),
+        badges
+      ),
+      PL.el("div", { class: "dossier-ligne__actions" },
+        PL.el("button", {
+          type: "button", class: "btn btn--petit btn--principal",
+          onclick: function () {
+            PL.router.go("/d/" + d.id + "/" + (d.signeEntree ? "sortie" : "entree"));
+          }
+        }, d.signeEntree ? "Ouvrir (sortie)" : "Ouvrir"),
+        PL.el("button", {
+          type: "button", class: "btn btn--petit",
+          onclick: function () {
+            PL.toast("Préparation de l'export…");
+            PL.store.exportJSON(d.id).then(function (r) {
+              if (r && r.ok) {
+                PL.toast("Dossier exporté — " + r.photos + " photo(s) incluse(s), " +
+                  PL.formaterOctets(r.octets) + ".");
+              }
+            });
+          }
+        }, "Exporter"),
+        PL.el("button", {
+          type: "button", class: "btn btn--petit",
+          onclick: function () {
+            PL.store.duplicate(d.id);
+            PL.toast("Dossier dupliqué.");
+            PL.router.rafraichir();
+          }
+        }, "Dupliquer"),
+        PL.el("button", {
+          type: "button", class: "btn btn--petit",
+          onclick: function () {
+            PL.store.patch(d.id, function (x) { x.archive = !x.archive; });
+            PL.router.rafraichir();
+          }
+        }, d.archive ? "Désarchiver" : "Archiver"),
+        PL.el("button", {
+          type: "button", class: "btn btn--petit btn--danger",
+          onclick: function () {
+            PL.confirmer({
+              titre: "Supprimer ce dossier ?",
+              message: "« " + d.titre + " » et ses photos seront définitivement effacés " +
+                "de cet appareil. Cette action est irréversible. Pensez à exporter le " +
+                "dossier avant si vous souhaitez le conserver.",
+              valider: "Supprimer définitivement", danger: true
+            }).then(function (ok) {
+              if (!ok) return;
+              PL.store.remove(d.id);
+              PL.toast("Dossier supprimé.");
+              PL.router.rafraichir();
+            });
+          }
+        }, "Supprimer")
+      )
+    );
+  }
+
+  function boutonImport() {
+    var input = PL.el("input", { type: "file", accept: "application/json,.json" });
+    input.style.display = "none";
+    input.addEventListener("change", function () {
+      var f = input.files && input.files[0];
+      input.value = "";
+      if (!f) return;
+      var fr = new FileReader();
+      fr.onload = function () {
+        var res = PL.store.importJSON(String(fr.result));
+        if (res.ok) {
+          PL.toast("Dossier importé" +
+            (res.photos ? " — " + res.photos + " photo(s) restaurée(s)." : "."));
+          PL.router.go("/d/" + res.id + "/entree");
+        } else {
+          PL.dialogue({
+            titre: "Import impossible",
+            corps: PL.el("p", null, res.erreur),
+            actions: [{ libelle: "Fermer", principal: true }]
+          });
+        }
+      };
+      fr.readAsText(f);
+    });
+    var b = PL.el("button", {
+      type: "button", class: "btn", onclick: function () { input.click(); }
+    }, "Importer un JSON");
+    return PL.el("span", null, input, b);
+  }
+
+  function blocStockage() {
+    var u = PL.store.usage();
+    var bloc = PL.el("div", { class: "carte carte--sourde", style: "margin-top:22px" },
+      PL.el("div", { class: "carte__entete" },
+        PL.el("strong", null, "Stockage de cet appareil"),
+        PL.el("span", { class: "dossier-ligne__meta" },
+          "Données : " + PL.formaterOctets(u.octets))
+      ),
+      PL.el("div", { class: "jauge" },
+        PL.el("div", {
+          class: "jauge__barre" + (u.pourcent > 80 ? " jauge__barre--alerte" : ""),
+          style: "width:" + Math.max(2, u.pourcent) + "%"
+        })
+      )
+    );
+    PL.photos.usage().then(function (octets) {
+      bloc.appendChild(PL.el("div", { class: "dossier-ligne__meta", style: "margin-top:6px" },
+        "Photos : " + PL.formaterOctets(octets) + " (stockées séparément, sans limite étroite)"));
+    });
+    return bloc;
+  }
+};
+
+
+/* === 61-view-identite.js === */
+/* ------------------------------------------------------------------
+   Vue « Identité » : logement, bailleur, locataire, campagne.
+   Saisie une seule fois, alimente les deux documents imprimés.
+   ------------------------------------------------------------------ */
+
+PL.maj = function (dossier, fn) {
+  var res = PL.store.patch(dossier.id, fn);
+  if (!res.ok && res.erreur) PL.toast(res.erreur);
+};
+
+PL.vues.identite = function (dossier, mode) {
+  var lecture = PL.estVerrouille(dossier, mode);
+  var camp = dossier.campagnes[mode];
+  var section = PL.SECTIONS[0];
+
+  function champ(label, objet, cle, options) {
+    var o = options || {};
+    return PL.champ({
+      label: label, valeur: objet[cle], lecture: lecture,
+      type: o.type, suffixe: o.suffixe, multiligne: o.multiligne,
+      large: o.large, placeholder: o.placeholder,
+      onChange: function (v) { PL.maj(dossier, function () { objet[cle] = v; }); }
+    });
+  }
+
+  if (!camp.date) {
+    PL.maj(dossier, function (d) { d.campagnes[mode].date = PL.dateJour(); });
+  }
+
+  return PL.el("div", null,
+    PL.enteteDossier(dossier, mode, section),
+
+    PL.el("section", { class: "carte" },
+      PL.el("div", { class: "carte__entete" }, PL.el("h2", null, "Logement")),
+      PL.el("div", { class: "grille-champs" },
+        champ("Adresse complète", dossier.logement, "adresse",
+          { multiligne: true, large: true, placeholder: "Numéro, voie, code postal, commune" }),
+        champ("Bâtiment", dossier.logement, "batiment"),
+        champ("Escalier", dossier.logement, "escalier"),
+        champ("Étage", dossier.logement, "etage"),
+        champ("Porte", dossier.logement, "porte")
+      )
+    ),
+
+    PL.el("section", { class: "carte" },
+      PL.el("div", { class: "carte__entete" }, PL.el("h2", null, "Bailleur")),
+      PL.el("div", { class: "grille-champs" },
+        champ("Nom ou désignation", dossier.bailleur, "nom", { large: true }),
+        champ("Adresse", dossier.bailleur, "adresse", { multiligne: true, large: true })
+      )
+    ),
+
+    PL.el("section", { class: "carte" },
+      PL.el("div", { class: "carte__entete" }, PL.el("h2", null, "Locataire")),
+      PL.el("div", { class: "grille-champs" },
+        champ("Nom", dossier.locataire, "nom", { large: true }),
+        champ("Adresse à l'entrée", dossier.locataire, "adresseEntree", { multiligne: true }),
+        champ("Nouvelle adresse (à la sortie)", dossier.locataire, "adresseSortie",
+          { multiligne: true })
+      )
+    ),
+
+    PL.el("section", { class: "carte" },
+      PL.el("div", { class: "carte__entete" },
+        PL.el("h2", null, "Constat " + PL.deMode(mode))),
+      PL.el("div", { class: "grille-champs" },
+        champ("Date du constat", camp, "date", { type: "date" }),
+        champ("Fait à", camp, "lieu", { placeholder: "Commune" }),
+        champ("Nombre d'exemplaires originaux", camp, "nbExemplaires", { type: "number" })
+      )
+    ),
+
+    PL.piedNavigation(dossier, mode, section)
+  );
+};
+
+
+/* === 62-view-edl.js === */
+/* ------------------------------------------------------------------
+   État des lieux : compteurs, chauffage et divers, pièces, équipements.
+   ------------------------------------------------------------------ */
+
+/* --- compteurs -------------------------------------------------------- */
+
+PL.vues.compteurs = function (dossier, mode) {
+  var lecture = PL.estVerrouille(dossier, mode);
+  var section = PL.SECTIONS[1];
+  var courants = dossier.edl.compteurs[mode];
+  var entree = dossier.edl.compteurs.entree;
+
+  var corps = PL.el("section", { class: "carte" },
+    PL.el("div", { class: "carte__entete" },
+      PL.el("h2", null, "Relevé des compteurs"),
+      PL.el("span", { class: "dossier-ligne__meta" }, "Relevé au jour du constat")
+    )
+  );
+
+  PL.DEFAULTS.compteurs.forEach(function (m) {
+    var cpt = courants[m.cle];
+    var bloc = PL.el("div", { class: "constat-ligne" },
+      PL.el("div", { class: "constat-grille" },
+        PL.champ({
+          label: m.libelle, valeur: cpt.valeur, suffixe: m.unite,
+          type: "number", lecture: lecture,
+          onChange: function (v) { PL.maj(dossier, function () { cpt.valeur = v; }); }
+        }),
+        mode === "sortie"
+          ? PL.el("div", { class: "champ" },
+              PL.el("span", { class: "champ__label" }, "Relevé d'entrée"),
+              PL.el("div", { style: "min-height:44px;display:flex;align-items:center" },
+                (entree[m.cle].valeur || "—") + " " + m.unite))
+          : null
+      ),
+      PL.blocPhotos({
+        liste: cpt.photos, lecture: lecture,
+        onChange: function () { PL.maj(dossier, function () {}); }
+      })
+    );
+    corps.appendChild(bloc);
+  });
+
+  var libres = PL.el("div", null);
+  function peindreLibres() {
+    PL.vider(libres);
+    courants.libres.forEach(function (l, i) {
+      libres.appendChild(PL.el("div", { class: "constat-ligne" },
+        PL.el("div", { class: "constat-grille" },
+          PL.champ({
+            label: "Intitulé", valeur: l.libelle, lecture: lecture,
+            placeholder: "Autre compteur",
+            onChange: function (v) { PL.maj(dossier, function () { l.libelle = v; }); }
+          }),
+          PL.champ({
+            label: "Relevé", valeur: l.valeur, suffixe: l.unite || "", lecture: lecture,
+            onChange: function (v) { PL.maj(dossier, function () { l.valeur = v; }); }
+          })
+        ),
+        lecture ? null : PL.el("button", {
+          type: "button", class: "btn btn--petit btn--danger",
+          onclick: function () {
+            PL.maj(dossier, function () { courants.libres.splice(i, 1); });
+            peindreLibres();
+          }
+        }, "Retirer cette ligne")
+      ));
+    });
+    if (!lecture) {
+      libres.appendChild(PL.el("button", {
+        type: "button", class: "btn btn--petit",
+        onclick: function () {
+          PL.maj(dossier, function () {
+            courants.libres.push({ id: PL.uid(), libelle: "", valeur: "", unite: "" });
+          });
+          peindreLibres();
+        }
+      }, "Ajouter un compteur"));
+    }
+  }
+  peindreLibres();
+  corps.appendChild(libres);
+
+  return PL.el("div", null,
+    PL.enteteDossier(dossier, mode, section),
+    corps,
+    PL.piedNavigation(dossier, mode, section)
+  );
+};
+
+/* --- chauffage et divers ---------------------------------------------- */
+
+PL.vues.technique = function (dossier, mode) {
+  var lecture = PL.estVerrouille(dossier, mode);
+  var section = PL.SECTIONS[2];
+  var ch = dossier.edl.chauffage;
+  var div = dossier.edl.divers[mode];
+
+  function segChoix(label, valeur, options, onChange) {
+    return PL.el("div", { class: "champ" },
+      PL.el("span", { class: "champ__label" }, label),
+      PL.segmente({
+        label: label, valeur: valeur, lecture: lecture,
+        options: options.map(function (o) { return { code: o, libelle: o }; }),
+        onChange: onChange
+      })
+    );
+  }
+
+  var cles = PL.el("div", null);
+  function peindreCles() {
+    PL.vider(cles);
+    div.cles.forEach(function (k, i) {
+      cles.appendChild(PL.el("div", { class: "constat-grille", style: "margin-bottom:6px" },
+        PL.champ({
+          label: "Nombre de clés", valeur: k.nombre, type: "number", lecture: lecture,
+          onChange: function (v) { PL.maj(dossier, function () { k.nombre = v; }); }
+        }),
+        PL.el("div", { style: "display:flex;gap:8px;align-items:flex-end" },
+          PL.champ({
+            label: "Pour", valeur: k.usage, lecture: lecture,
+            placeholder: "porte palière, boîte aux lettres, cave…",
+            onChange: function (v) { PL.maj(dossier, function () { k.usage = v; }); }
+          }),
+          lecture || div.cles.length < 2 ? null : PL.el("button", {
+            type: "button", class: "btn btn--petit btn--danger",
+            "aria-label": "Retirer ce jeu de clés",
+            style: "margin-bottom:12px",
+            onclick: function () {
+              PL.maj(dossier, function () { div.cles.splice(i, 1); });
+              peindreCles();
+            }
+          }, "×")
+        )
+      ));
+    });
+    if (!lecture) {
+      cles.appendChild(PL.el("button", {
+        type: "button", class: "btn btn--petit",
+        onclick: function () {
+          PL.maj(dossier, function () {
+            div.cles.push({ id: PL.uid(), nombre: "", usage: "" });
+          });
+          peindreCles();
+        }
+      }, "Ajouter un jeu de clés"));
+    }
+  }
+  peindreCles();
+
+  return PL.el("div", null,
+    PL.enteteDossier(dossier, mode, section),
+
+    PL.el("section", { class: "carte" },
+      PL.el("div", { class: "carte__entete" }, PL.el("h2", null, "Chauffage")),
+      PL.el("div", { class: "grille-champs" },
+        segChoix("Mode", ch.mode, PL.DEFAULTS.chauffageModes, function (v) {
+          PL.maj(dossier, function () { ch.mode = v; });
+        }),
+        segChoix("Énergie", ch.energie, PL.DEFAULTS.chauffageEnergies, function (v) {
+          PL.maj(dossier, function () { ch.energie = v; });
+        }),
+        PL.champ({
+          label: "Nombre de radiateurs", valeur: ch.nbRadiateurs, type: "number",
+          lecture: lecture,
+          onChange: function (v) { PL.maj(dossier, function () { ch.nbRadiateurs = v; }); }
+        }),
+        PL.champ({
+          label: "Production d'eau chaude", valeur: ch.eauChaude, lecture: lecture,
+          placeholder: "chaudière, ballon, cumulus…",
+          onChange: function (v) { PL.maj(dossier, function () { ch.eauChaude = v; }); }
+        }),
+        PL.champ({
+          label: "Observations", valeur: ch.note, multiligne: true, large: true,
+          lecture: lecture,
+          onChange: function (v) { PL.maj(dossier, function () { ch.note = v; }); }
+        })
+      )
+    ),
+
+    PL.el("section", { class: "carte" },
+      PL.el("div", { class: "carte__entete" },
+        PL.el("h2", null, "Clés remises" + (mode === "sortie" ? " / restituées" : ""))),
+      cles
+    ),
+
+    PL.el("section", { class: "carte" },
+      PL.el("div", { class: "carte__entete" }, PL.el("h2", null, "Sécurité et divers")),
+      PL.el("div", { class: "grille-champs" },
+        PL.champ({
+          label: "Nombre de détecteurs de fumée", valeur: div.detecteurs.nombre,
+          type: "number", lecture: lecture,
+          onChange: function (v) { PL.maj(dossier, function () { div.detecteurs.nombre = v; }); }
+        }),
+        PL.el("div", { class: "champ" },
+          PL.el("span", { class: "champ__label" }, "Test des détecteurs"),
+          PL.caseACocher({
+            label: "Test réalisé en présence du locataire",
+            coche: div.detecteurs.testRealise, lecture: lecture,
+            onChange: function (v) {
+              PL.maj(dossier, function () { div.detecteurs.testRealise = v; });
+            }
+          })
+        ),
+        PL.champ({
+          label: "Réception télévision", valeur: div.receptionTV, lecture: lecture,
+          placeholder: "antenne collective, TNT, satellite…",
+          onChange: function (v) { PL.maj(dossier, function () { div.receptionTV = v; }); }
+        })
+      ),
+      PL.el("div", { class: "grille-cases", style: "margin:10px 0" },
+        [
+          { cle: "boiteAuxLettres", libelle: "Boîte aux lettres" },
+          { cle: "sonnette", libelle: "Sonnette" },
+          { cle: "interphone", libelle: "Interphone" }
+        ].map(function (o) {
+          return PL.caseACocher({
+            label: o.libelle, coche: div[o.cle], lecture: lecture,
+            onChange: function (v) { PL.maj(dossier, function () { div[o.cle] = v; }); }
+          });
+        })
+      ),
+      PL.champ({
+        label: "Autres observations", valeur: div.note, multiligne: true, lecture: lecture,
+        onChange: function (v) { PL.maj(dossier, function () { div.note = v; }); }
+      })
+    ),
+
+    PL.piedNavigation(dossier, mode, section)
+  );
+};
+
+/* --- pièces ------------------------------------------------------------ */
+
+PL.vues.pieces = function (dossier, mode) {
+  var lecture = PL.estVerrouille(dossier, mode);
+  var section = PL.SECTIONS[3];
+  var champEtat = mode === "sortie" ? "etatSortie" : "etatEntree";
+  var champRemarque = mode === "sortie" ? "remarqueSortie" : "remarqueEntree";
+  var courante = dossier.edl.pieces.length ? dossier.edl.pieces[0].id : null;
+
+  var nav = PL.el("div", { class: "liste-nav" });
+  var panneau = PL.el("div", null);
+  var idListe = "revetements-" + PL.uid().slice(0, 6);
+
+  function pieceCourante() {
+    return dossier.edl.pieces.filter(function (p) { return p.id === courante; })[0] || null;
+  }
+
+  function compteurPiece(p) {
+    var faits = PL.SUPPORTS.filter(function (s) { return p.supports[s.cle][champEtat]; }).length;
+    return faits + "/" + PL.SUPPORTS.length;
+  }
+
+  function peindreNav() {
+    PL.vider(nav);
+    dossier.edl.pieces.forEach(function (p) {
+      var complet = compteurPiece(p) === PL.SUPPORTS.length + "/" + PL.SUPPORTS.length;
+      nav.appendChild(PL.el("button", {
+        type: "button", class: "liste-nav__item",
+        "aria-current": p.id === courante ? "true" : "false",
+        onclick: function () { courante = p.id; peindreNav(); peindrePanneau(); }
+      },
+        PL.el("span", null, p.nom),
+        PL.el("span", { class: "hub-item__compte" + (complet ? " hub-item__compte--complet" : "") },
+          compteurPiece(p))
+      ));
+    });
+  }
+
+  /* Hors du conteneur défilant : en barre horizontale il deviendrait
+     une colonne de plus au lieu d'une action pleine largeur. */
+  var zoneAjout = lecture ? null : PL.el("div", { style: "margin-top:8px" },
+    PL.el("button", {
+      type: "button", class: "btn btn--petit btn--bloc",
+      onclick: function () {
+        PL.demanderTexte({
+          titre: "Ajouter une pièce", label: "Nom de la pièce", valider: "Ajouter"
+        }).then(function (nom) {
+          if (!nom) return;
+          var p = PL.nouvellePiece(nom, true);
+          PL.maj(dossier, function (d) { d.edl.pieces.push(p); });
+          courante = p.id;
+          peindreNav(); peindrePanneau();
+        });
+      }
+    }, "Ajouter une pièce"));
+
+  function peindrePanneau() {
+    PL.vider(panneau);
+    var p = pieceCourante();
+    if (!p) {
+      panneau.appendChild(PL.el("div", { class: "etat-vide" }, "Aucune pièce dans ce dossier."));
+      return;
+    }
+
+    var carte = PL.el("section", { class: "carte" },
+      PL.el("div", { class: "carte__entete" },
+        PL.el("div", { class: "carte__titre" }, PL.el("h2", null, p.nom)),
+        lecture ? null : PL.el("div", { class: "app-entete__actions" },
+          PL.el("button", {
+            type: "button", class: "btn btn--petit",
+            onclick: function () {
+              PL.SUPPORTS.forEach(function (s) {
+                PL.maj(dossier, function () { p.supports[s.cle][champEtat] = "B"; });
+              });
+              peindreNav(); peindrePanneau();
+              PL.annoncer("Pièce " + p.nom + " renseignée en bon état.");
+            }
+          }, "Tout en bon état"),
+          PL.el("button", {
+            type: "button", class: "btn btn--petit",
+            onclick: function () {
+              PL.demanderTexte({
+                titre: "Renommer la pièce", label: "Nom", valeur: p.nom, valider: "Renommer"
+              }).then(function (nom) {
+                if (!nom) return;
+                PL.maj(dossier, function () { p.nom = nom; });
+                peindreNav(); peindrePanneau();
+              });
+            }
+          }, "Renommer"),
+          PL.el("button", {
+            type: "button", class: "btn btn--petit",
+            onclick: function () {
+              var copie = JSON.parse(JSON.stringify(p));
+              copie.id = PL.uid();
+              copie.nom = p.nom + " (copie)";
+              copie.photos = { entree: [], sortie: [] };
+              PL.maj(dossier, function (d) { d.edl.pieces.push(copie); });
+              courante = copie.id;
+              peindreNav(); peindrePanneau();
+            }
+          }, "Dupliquer"),
+          p.supprimable ? PL.el("button", {
+            type: "button", class: "btn btn--petit btn--danger",
+            onclick: function () {
+              PL.confirmer({
+                titre: "Supprimer « " + p.nom + " » ?",
+                message: "Le constat de cette pièce et ses photos seront perdus.",
+                valider: "Supprimer", danger: true
+              }).then(function (ok) {
+                if (!ok) return;
+                PL.maj(dossier, function (d) {
+                  d.edl.pieces = d.edl.pieces.filter(function (x) { return x.id !== p.id; });
+                });
+                courante = dossier.edl.pieces.length ? dossier.edl.pieces[0].id : null;
+                peindreNav(); peindrePanneau();
+              });
+            }
+          }, "Supprimer") : null
+        )
+      )
+    );
+
+    PL.SUPPORTS.forEach(function (s) {
+      var sup = p.supports[s.cle];
+      carte.appendChild(PL.el("div", { class: "constat-ligne" },
+        PL.el("div", { class: "constat-ligne__entete" },
+          PL.el("span", { class: "constat-ligne__nom" }, s.libelle),
+          mode === "sortie" ? PL.etatLecture(sup.etatEntree) : null
+        ),
+        PL.el("div", { class: "constat-grille" },
+          PL.champ({
+            label: "Revêtement", valeur: sup.revetement, lecture: lecture, liste: idListe,
+            placeholder: "peinture, carrelage, parquet…",
+            onChange: function (v) { PL.maj(dossier, function () { sup.revetement = v; }); }
+          }),
+          PL.el("div", { class: "champ" },
+            PL.el("span", { class: "champ__label" }, "État constaté"),
+            PL.segmente({
+              label: s.libelle + " — état", valeur: sup[champEtat], options: PL.ETATS_BATI,
+              lecture: lecture,
+              onChange: function (v) {
+                PL.maj(dossier, function () { sup[champEtat] = v; });
+                peindreNav();
+              }
+            })
+          ),
+          PL.champ({
+            label: "Remarques", valeur: sup[champRemarque], multiligne: true, rows: 2,
+            large: true, lecture: lecture,
+            onChange: function (v) { PL.maj(dossier, function () { sup[champRemarque] = v; }); }
+          })
+        ),
+        mode === "sortie" && sup.remarqueEntree
+          ? PL.el("div", { class: "note" }, "Remarque d'entrée : " + sup.remarqueEntree)
+          : null
+      ));
+    });
+
+    if (mode === "sortie" && p.photos.entree.length) {
+      var avant = PL.el("div", { style: "margin-top:10px" },
+        PL.el("span", { class: "champ__label" }, "Photos d'entrée"));
+      var grille = PL.el("div", { class: "photos__grille" });
+      p.photos.entree.forEach(function (ref) {
+        var v = PL.el("div", { class: "photo-vignette" });
+        PL.photos.get(ref.id).then(function (data) {
+          if (data) v.appendChild(PL.el("img", { src: data, alt: "Photo d'entrée" }));
+        });
+        grille.appendChild(v);
+      });
+      avant.appendChild(grille);
+      carte.appendChild(avant);
+    }
+
+    carte.appendChild(PL.el("div", { style: "margin-top:12px" },
+      PL.el("span", { class: "champ__label" },
+        "Photos — " + PL.libelleMode(mode).toLowerCase()),
+      PL.blocPhotos({
+        liste: p.photos[mode], lecture: lecture,
+        onChange: function () { PL.maj(dossier, function () {}); }
+      })
+    ));
+
+    panneau.appendChild(carte);
+  }
+
+  peindreNav();
+  peindrePanneau();
+
+  return PL.el("div", null,
+    PL.enteteDossier(dossier, mode, section),
+    PL.datalist(idListe, PL.REVETEMENTS),
+    PL.el("div", { class: "duo" },
+      PL.el("aside", { class: "duo__aside" },
+        PL.el("div", { class: "carte" },
+          PL.el("h2", { style: "margin-bottom:8px;font-size:0.95rem" }, "Pièces"),
+          nav, zoneAjout)
+      ),
+      panneau
+    ),
+    PL.piedNavigation(dossier, mode, section)
+  );
+};
+
+/* --- équipements -------------------------------------------------------- */
+
+PL.vues.equipements = function (dossier, mode) {
+  var lecture = PL.estVerrouille(dossier, mode);
+  var section = PL.SECTIONS[4];
+  var champ = mode === "sortie" ? "presentSortie" : "presentEntree";
+
+  var blocs = [
+    { cle: "cuisine", titre: "Équipements cuisine" },
+    { cle: "salleDEau", titre: "Équipements salle d'eau" },
+    { cle: "wc", titre: "Équipements WC" }
+  ];
+
+  var racine = PL.el("div", null,
+    PL.enteteDossier(dossier, mode, section),
+    PL.el("div", { class: "note" },
+      "Cochez les équipements présents et en place au moment du constat. " +
+      "Utilisez le champ « précision » pour un modèle, une marque ou une réserve.")
+  );
+
+  blocs.forEach(function (b) {
+    var carte = PL.el("section", { class: "carte" },
+      PL.el("div", { class: "carte__entete" }, PL.el("h2", null, b.titre)));
+    var liste = PL.el("div", null);
+
+    function peindre() {
+      PL.vider(liste);
+      dossier.edl.equipements[b.cle].forEach(function (eq, i) {
+        liste.appendChild(PL.el("div", { class: "constat-grille", style: "margin-bottom:6px" },
+          PL.caseACocher({
+            label: eq.libelle, coche: eq[champ], lecture: lecture,
+            onChange: function (v) { PL.maj(dossier, function () { eq[champ] = v; }); }
+          }),
+          PL.el("div", { style: "display:flex;gap:6px;align-items:flex-end" },
+            PL.champ({
+              label: "Précision", valeur: eq.precision, lecture: lecture,
+              onChange: function (v) { PL.maj(dossier, function () { eq.precision = v; }); }
+            }),
+            lecture ? null : PL.el("button", {
+              type: "button", class: "btn btn--petit btn--danger",
+              "aria-label": "Retirer " + eq.libelle, style: "margin-bottom:12px",
+              onclick: function () {
+                PL.maj(dossier, function () {
+                  dossier.edl.equipements[b.cle].splice(i, 1);
+                });
+                peindre();
+              }
+            }, "×")
+          )
+        ));
+      });
+      if (!lecture) {
+        liste.appendChild(PL.el("button", {
+          type: "button", class: "btn btn--petit",
+          onclick: function () {
+            PL.demanderTexte({
+              titre: "Ajouter un équipement", label: "Désignation", valider: "Ajouter"
+            }).then(function (nom) {
+              if (!nom) return;
+              PL.maj(dossier, function () {
+                dossier.edl.equipements[b.cle].push({
+                  id: PL.uid(), libelle: nom, presentEntree: mode === "entree",
+                  presentSortie: false, precision: ""
+                });
+              });
+              peindre();
+            });
+          }
+        }, "Ajouter un équipement"));
+      }
+    }
+
+    peindre();
+    carte.appendChild(liste);
+    racine.appendChild(carte);
+  });
+
+  racine.appendChild(PL.piedNavigation(dossier, mode, section));
+  return racine;
+};
+
+
+/* === 63-view-mobilier.js === */
+/* ------------------------------------------------------------------
+   Inventaire et état des meubles — annexe obligatoire du bail meublé
+   (art. 25-8 de la loi n° 89-462).
+   ------------------------------------------------------------------ */
+
+PL.vues.mobilier = function (dossier, mode) {
+  var lecture = PL.estVerrouille(dossier, mode);
+  var section = PL.SECTIONS[5];
+  var champEtat = mode === "sortie" ? "etatSortie" : "etatEntree";
+  var courante = dossier.mobilier.sections.length ? dossier.mobilier.sections[0].id : null;
+
+  var nav = PL.el("div", { class: "liste-nav" });
+  var panneau = PL.el("div", null);
+
+  function sectionCourante() {
+    return dossier.mobilier.sections.filter(function (s) { return s.id === courante; })[0] || null;
+  }
+
+  function compteur(sec) {
+    var faits = sec.lignes.filter(function (l) { return l.absent || l[champEtat]; }).length;
+    return faits + "/" + sec.lignes.length;
+  }
+
+  function peindreNav() {
+    PL.vider(nav);
+    dossier.mobilier.sections.forEach(function (sec) {
+      var complet = sec.lignes.length > 0 &&
+        sec.lignes.every(function (l) { return l.absent || l[champEtat]; });
+      nav.appendChild(PL.el("button", {
+        type: "button", class: "liste-nav__item",
+        "aria-current": sec.id === courante ? "true" : "false",
+        onclick: function () { courante = sec.id; peindreNav(); peindrePanneau(); }
+      },
+        PL.el("span", null, sec.titre),
+        PL.el("span", { class: "hub-item__compte" + (complet ? " hub-item__compte--complet" : "") },
+          compteur(sec))
+      ));
+    });
+  }
+
+  /* Hors du conteneur défilant : en barre horizontale il deviendrait
+     une colonne de plus au lieu d'une action pleine largeur. */
+  var zoneAjout = lecture ? null : PL.el("div", { style: "margin-top:8px" },
+    PL.el("button", {
+      type: "button", class: "btn btn--petit btn--bloc",
+      onclick: function () {
+        PL.demanderTexte({
+          titre: "Ajouter une section", label: "Intitulé de la section", valider: "Ajouter"
+        }).then(function (titre) {
+          if (!titre) return;
+          var sec = PL.nouvelleSection(titre, []);
+          PL.maj(dossier, function (d) { d.mobilier.sections.push(sec); });
+          courante = sec.id;
+          peindreNav(); peindrePanneau();
+        });
+      }
+    }, "Ajouter une section"));
+
+  function peindrePanneau() {
+    PL.vider(panneau);
+    var sec = sectionCourante();
+    if (!sec) {
+      panneau.appendChild(PL.el("div", { class: "etat-vide" }, "Aucune section d'inventaire."));
+      return;
+    }
+
+    var carte = PL.el("section", { class: "carte" },
+      PL.el("div", { class: "carte__entete" },
+        PL.el("div", { class: "carte__titre" }, PL.el("h2", null, sec.titre)),
+        lecture ? null : PL.el("div", { class: "app-entete__actions" },
+          PL.el("button", {
+            type: "button", class: "btn btn--petit",
+            onclick: function () {
+              PL.maj(dossier, function () {
+                sec.lignes.forEach(function (l) { if (!l.absent) l[champEtat] = "B"; });
+              });
+              peindreNav(); peindrePanneau();
+              PL.annoncer("Section " + sec.titre + " renseignée en bon état.");
+            }
+          }, "Tout en bon état"),
+          PL.el("button", {
+            type: "button", class: "btn btn--petit",
+            onclick: function () {
+              PL.demanderTexte({
+                titre: "Renommer la section", label: "Intitulé", valeur: sec.titre,
+                valider: "Renommer"
+              }).then(function (t) {
+                if (!t) return;
+                PL.maj(dossier, function () { sec.titre = t; });
+                peindreNav(); peindrePanneau();
+              });
+            }
+          }, "Renommer"),
+          PL.el("button", {
+            type: "button", class: "btn btn--petit btn--danger",
+            onclick: function () {
+              PL.confirmer({
+                titre: "Supprimer « " + sec.titre + " » ?",
+                message: "Les " + sec.lignes.length + " lignes de cette section seront perdues.",
+                valider: "Supprimer", danger: true
+              }).then(function (ok) {
+                if (!ok) return;
+                PL.maj(dossier, function (d) {
+                  d.mobilier.sections = d.mobilier.sections.filter(function (x) {
+                    return x.id !== sec.id;
+                  });
+                });
+                courante = dossier.mobilier.sections.length
+                  ? dossier.mobilier.sections[0].id : null;
+                peindreNav(); peindrePanneau();
+              });
+            }
+          }, "Supprimer la section")
+        )
+      ),
+      PL.el("div", { class: "note" },
+        "Quantité : indiquez « Ø » ou cochez « absent » si l'élément n'est pas présent. " +
+        "États : TB très bon, B bon, P passable, M mauvais.")
+    );
+
+    var lignes = PL.el("div", null);
+
+    function peindreLignes() {
+      PL.vider(lignes);
+      sec.lignes.forEach(function (l) {
+        var segment = PL.segmente({
+          label: l.libelle + " — état", valeur: l[champEtat], options: PL.ETATS_MOBILIER,
+          lecture: lecture || l.absent,
+          onChange: function (v) {
+            PL.maj(dossier, function () { l[champEtat] = v; });
+            peindreNav();
+          }
+        });
+        if (l.absent) segment.classList.add("segmente--desactive");
+
+        lignes.appendChild(PL.el("div", {
+          class: "inv-ligne" + (l.absent ? " inv-ligne--absente" : "")
+        },
+          PL.el("div", { class: "inv-ligne__tete" },
+            PL.el("span", { class: "inv-ligne__nom" }, l.libelle),
+            PL.el("span", { style: "display:flex;gap:8px;align-items:center" },
+              mode === "sortie" ? PL.etatLecture(l.etatEntree) : null,
+              lecture ? null : PL.el("button", {
+                type: "button", class: "btn btn--petit",
+                "aria-label": "Renommer " + l.libelle,
+                onclick: function () {
+                  PL.demanderTexte({
+                    titre: "Renommer la ligne", label: "Désignation", valeur: l.libelle,
+                    valider: "Renommer"
+                  }).then(function (t) {
+                    if (!t) return;
+                    PL.maj(dossier, function () { l.libelle = t; });
+                    peindreLignes();
+                  });
+                }
+              }, "Renommer"),
+              lecture ? null : PL.el("button", {
+                type: "button", class: "btn btn--petit btn--danger",
+                "aria-label": "Supprimer " + l.libelle,
+                onclick: function () {
+                  PL.maj(dossier, function () {
+                    sec.lignes = sec.lignes.filter(function (x) { return x.id !== l.id; });
+                  });
+                  peindreNav(); peindreLignes();
+                }
+              }, "×")
+            )
+          ),
+          PL.el("div", { class: "constat-grille" },
+            PL.el("div", { style: "display:flex;gap:10px;align-items:flex-end" },
+              PL.el("div", { class: "inv-ligne__qte" },
+                PL.champ({
+                  label: "Quantité", valeur: l.qte, lecture: lecture || l.absent,
+                  onChange: function (v) { PL.maj(dossier, function () { l.qte = v; }); }
+                })
+              ),
+              PL.el("div", { style: "flex:1;margin-bottom:12px" },
+                PL.caseACocher({
+                  label: "Absent (Ø)", coche: l.absent, lecture: lecture,
+                  onChange: function (v) {
+                    PL.maj(dossier, function () {
+                      l.absent = v;
+                      if (v) { l.qte = "Ø"; l.etatEntree = null; l.etatSortie = null; }
+                      else if (l.qte === "Ø") l.qte = "";
+                    });
+                    peindreNav(); peindreLignes();
+                  }
+                })
+              )
+            ),
+            PL.el("div", { class: "champ" },
+              PL.el("span", { class: "champ__label" },
+                "État " + PL.libelleMode(mode).toLowerCase()),
+              segment
+            ),
+            PL.champ({
+              label: "Observations", valeur: l.observations, multiligne: true, rows: 2,
+              large: true, lecture: lecture,
+              onChange: function (v) { PL.maj(dossier, function () { l.observations = v; }); }
+            })
+          ),
+          PL.blocPhotos({
+            liste: l.photos[mode], lecture: lecture,
+            onChange: function () { PL.maj(dossier, function () {}); }
+          })
+        ));
+      });
+
+      if (!lecture) {
+        lignes.appendChild(PL.el("button", {
+          type: "button", class: "btn btn--petit", style: "margin-top:10px",
+          onclick: function () {
+            PL.demanderTexte({
+              titre: "Ajouter une ligne", label: "Désignation", valider: "Ajouter"
+            }).then(function (t) {
+              if (!t) return;
+              PL.maj(dossier, function () { sec.lignes.push(PL.nouvelleLigne(t)); });
+              peindreNav(); peindreLignes();
+            });
+          }
+        }, "Ajouter une ligne"));
+      }
+    }
+
+    peindreLignes();
+    carte.appendChild(lignes);
+    panneau.appendChild(carte);
+  }
+
+  peindreNav();
+  peindrePanneau();
+
+  return PL.el("div", null,
+    PL.enteteDossier(dossier, mode, section),
+    PL.el("div", { class: "duo" },
+      PL.el("aside", { class: "duo__aside" },
+        PL.el("div", { class: "carte" },
+          PL.el("h2", { style: "margin-bottom:8px;font-size:0.95rem" }, "Sections"),
+          nav, zoneAjout)
+      ),
+      panneau
+    ),
+    PL.piedNavigation(dossier, mode, section)
+  );
+};
+
+
+/* === 64-view-signature.js === */
+/* ------------------------------------------------------------------
+   Observations, contrôle de complétion, signatures tactiles et
+   verrouillage de la campagne.
+   ------------------------------------------------------------------ */
+
+PL.manques = function (dossier, mode) {
+  var liste = [];
+  var camp = dossier.campagnes[mode];
+  var champEtat = mode === "sortie" ? "etatSortie" : "etatEntree";
+
+  if (!dossier.logement.adresse.trim()) liste.push("Adresse du logement");
+  if (!dossier.bailleur.nom.trim()) liste.push("Nom du bailleur");
+  if (!dossier.locataire.nom.trim()) liste.push("Nom du locataire");
+  if (!camp.date) liste.push("Date du constat");
+  if (!camp.lieu.trim()) liste.push("Lieu (« fait à »)");
+
+  var cptVides = PL.DEFAULTS.compteurs.filter(function (m) {
+    return !String(dossier.edl.compteurs[mode][m.cle].valeur).trim();
+  });
+  if (cptVides.length) {
+    liste.push("Compteurs non relevés : " + cptVides.map(function (m) {
+      return m.libelle;
+    }).join(", "));
+  }
+
+  dossier.edl.pieces.forEach(function (p) {
+    var vides = PL.SUPPORTS.filter(function (s) { return !p.supports[s.cle][champEtat]; });
+    if (vides.length) {
+      liste.push(p.nom + " : " + vides.map(function (s) {
+        return s.libelle.toLowerCase();
+      }).join(", ") + " sans état");
+    }
+  });
+
+  dossier.mobilier.sections.forEach(function (sec) {
+    var n = sec.lignes.filter(function (l) { return !l.absent && !l[champEtat]; }).length;
+    if (n) liste.push(sec.titre + " : " + n + " ligne" + (n > 1 ? "s" : "") + " sans état");
+  });
+
+  return liste;
+};
+
+PL.zoneSignature = function (o) {
+  /* o : { valeur, onChange, lecture, titre } */
+  var canvas = PL.el("canvas", { class: "signature-zone", "aria-label": "Zone de signature — " + o.titre });
+  var ctx = null;
+  var dessine = false;
+  var vierge = true;
+
+  function dimensionner() {
+    var dpr = window.devicePixelRatio || 1;
+    var largeur = canvas.clientWidth || 420;
+    var hauteur = 170;
+    canvas.width = Math.round(largeur * dpr);
+    canvas.height = Math.round(hauteur * dpr);
+    ctx = canvas.getContext("2d");
+    ctx.scale(dpr, dpr);
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, largeur, hauteur);
+    ctx.lineWidth = 2;
+    ctx.lineCap = "round";
+    ctx.lineJoin = "round";
+    ctx.strokeStyle = "#111111";
+    if (o.valeur) {
+      var img = new Image();
+      img.onload = function () { ctx.drawImage(img, 0, 0, largeur, hauteur); };
+      img.src = o.valeur;
+      vierge = false;
+    }
+  }
+
+  function position(e) {
+    var r = canvas.getBoundingClientRect();
+    return { x: e.clientX - r.left, y: e.clientY - r.top };
+  }
+
+  if (!o.lecture) {
+    canvas.addEventListener("pointerdown", function (e) {
+      e.preventDefault();
+      canvas.setPointerCapture(e.pointerId);
+      dessine = true;
+      vierge = false;
+      var p = position(e);
+      ctx.beginPath();
+      ctx.moveTo(p.x, p.y);
+    });
+    canvas.addEventListener("pointermove", function (e) {
+      if (!dessine) return;
+      var p = position(e);
+      ctx.lineTo(p.x, p.y);
+      ctx.stroke();
+    });
+    ["pointerup", "pointercancel", "pointerleave"].forEach(function (evt) {
+      canvas.addEventListener(evt, function () {
+        if (!dessine) return;
+        dessine = false;
+        o.onChange(canvas.toDataURL("image/png"));
+      });
+    });
+  }
+
+  setTimeout(dimensionner, 0);
+
+  var bloc = PL.el("div", null,
+    PL.el("span", { class: "champ__label" }, o.titre),
+    canvas,
+    PL.el("div", { class: "signature-legende" },
+      PL.el("span", null, "« Lu et approuvé »"),
+      o.lecture ? null : PL.el("button", {
+        type: "button", class: "btn btn--petit",
+        onclick: function () {
+          dimensionner();
+          var l = canvas.clientWidth || 420;
+          ctx.fillStyle = "#ffffff";
+          ctx.fillRect(0, 0, l, 170);
+          ctx.strokeStyle = "#111111";
+          vierge = true;
+          o.onChange("");
+        }
+      }, "Effacer")
+    )
+  );
+  bloc.estVierge = function () { return vierge; };
+  return bloc;
+};
+
+PL.vues.signatures = function (dossier, mode) {
+  var section = PL.SECTIONS[6];
+  var camp = dossier.campagnes[mode];
+  var verrou = PL.estVerrouille(dossier, mode);
+  var racine = PL.el("div", null, PL.enteteDossier(dossier, mode, section));
+
+  racine.appendChild(PL.el("section", { class: "carte" },
+    PL.el("div", { class: "carte__entete" },
+      PL.el("h2", null, "Observations et réserves")),
+    PL.champ({
+      label: "Observations du constat " + PL.deMode(mode),
+      valeur: dossier.observations[mode], multiligne: true, rows: 5, lecture: verrou,
+      onChange: function (v) { PL.maj(dossier, function (d) { d.observations[mode] = v; }); }
+    })
+  ));
+
+  /* --- contrôle de complétion : informe, ne bloque pas --- */
+  var manques = PL.manques(dossier, mode);
+  var carteControle = PL.el("section", { class: "carte" },
+    PL.el("div", { class: "carte__entete" },
+      PL.el("h2", null, "Contrôle avant signature"),
+      PL.el("span", { class: "dossier-ligne__meta" },
+        PL.progression(dossier, mode).global.pourcent + " % renseigné")
+    )
+  );
+  if (manques.length) {
+    carteControle.appendChild(PL.el("div", { class: "note" },
+      manques.length + " point" + (manques.length > 1 ? "s" : "") +
+      " non renseigné" + (manques.length > 1 ? "s" : "") +
+      ". Vous pouvez signer malgré tout : un élément laissé vide sera imprimé vide."));
+    var ul = PL.el("ul", { class: "liste-manques" });
+    manques.slice(0, 20).forEach(function (m) { ul.appendChild(PL.el("li", null, m)); });
+    if (manques.length > 20) {
+      ul.appendChild(PL.el("li", null, "… et " + (manques.length - 20) + " autres."));
+    }
+    carteControle.appendChild(ul);
+  } else {
+    carteControle.appendChild(PL.el("p", null, "Tous les postes du constat sont renseignés."));
+  }
+  racine.appendChild(carteControle);
+
+  /* --- délais légaux --- */
+  racine.appendChild(PL.el("section", { class: "carte carte--sourde" },
+    PL.el("h2", { style: "margin-bottom:8px" }, "Délais de réserve à rappeler au locataire"),
+    PL.el("p", null,
+      "Le locataire peut demander la modification de l'état des lieux d'entrée dans les " +
+      "dix jours suivant son établissement."),
+    PL.el("p", { style: "margin-bottom:0" },
+      "Pour les éléments de chauffage, cette demande reste possible pendant le premier mois " +
+      "de la période de chauffe.")
+  ));
+
+  /* --- signatures --- */
+  var carteSign = PL.el("section", { class: "carte" },
+    PL.el("div", { class: "carte__entete" },
+      PL.el("h2", null, "Signatures"),
+      camp.signeLe
+        ? PL.el("span", { class: "badge badge--signe" }, "Signé le " + PL.formaterDate(camp.signeLe))
+        : null
+    ),
+    PL.el("div", { class: "grille-champs" },
+      PL.champ({
+        label: "Nom du bailleur (ou de son mandataire)", valeur: camp.nomBailleur,
+        lecture: verrou,
+        onChange: function (v) { PL.maj(dossier, function () { camp.nomBailleur = v; }); }
+      }),
+      PL.champ({
+        label: "Nom du locataire", valeur: camp.nomLocataire, lecture: verrou,
+        onChange: function (v) { PL.maj(dossier, function () { camp.nomLocataire = v; }); }
+      })
+    ),
+    PL.el("div", { class: "signature-bloc" },
+      PL.zoneSignature({
+        titre: "Signature du bailleur", valeur: camp.signatureBailleur, lecture: verrou,
+        onChange: function (v) { PL.maj(dossier, function () { camp.signatureBailleur = v; }); }
+      }),
+      PL.zoneSignature({
+        titre: "Signature du locataire", valeur: camp.signatureLocataire, lecture: verrou,
+        onChange: function (v) { PL.maj(dossier, function () { camp.signatureLocataire = v; }); }
+      })
+    ),
+    PL.el("div", { class: "note" },
+      "La signature tactile recueillie ici vaut commencement de preuve écrite. " +
+      "Elle ne constitue pas une signature électronique qualifiée au sens du règlement eIDAS. " +
+      "Pour un constat contradictoire, imprimez et faites signer les exemplaires papier.")
+  );
+
+  var actions = PL.el("div", { class: "barre-actions" });
+  if (verrou) {
+    actions.appendChild(PL.el("button", {
+      type: "button", class: "btn",
+      onclick: function () {
+        PL.confirmer({
+          titre: "Rouvrir le constat ?",
+          message: "Le constat redeviendra modifiable. La date de signature sera effacée " +
+            "et devra être reprise après correction.",
+          valider: "Rouvrir"
+        }).then(function (ok) {
+          if (!ok) return;
+          PL.maj(dossier, function () { camp.verrouille = false; camp.signeLe = null; });
+          PL.toast("Constat rouvert.");
+          PL.router.rafraichir();
+        });
+      }
+    }, "Rouvrir le constat"));
+  } else {
+    actions.appendChild(PL.el("button", {
+      type: "button", class: "btn btn--principal",
+      onclick: function () {
+        var message = manques.length
+          ? manques.length + " point(s) restent non renseignés. Le constat sera verrouillé " +
+            "en l'état et passera en lecture seule."
+          : "Le constat sera verrouillé et passera en lecture seule. " +
+            "Vous pourrez le rouvrir explicitement si nécessaire.";
+        PL.confirmer({
+          titre: "Signer et verrouiller le constat " + PL.deMode(mode) + " ?",
+          message: message, valider: "Signer et verrouiller"
+        }).then(function (ok) {
+          if (!ok) return;
+          PL.maj(dossier, function () {
+            camp.verrouille = true;
+            camp.signeLe = new Date().toISOString();
+          });
+          PL.toast("Constat signé et verrouillé.");
+          PL.router.rafraichir();
+        });
+      }
+    }, "Signer et verrouiller"));
+  }
+  actions.appendChild(PL.el("button", {
+    type: "button", class: "btn",
+    onclick: function () { PL.router.go("/d/" + dossier.id + "/" + mode); }
+  }, "Retour au sommaire"));
+
+  carteSign.appendChild(actions);
+  racine.appendChild(carteSign);
+  return racine;
+};
+
+
+/* === 70-print.js === */
+/* ------------------------------------------------------------------
+   Rendu d'impression. Le DOM A4 est reconstruit à partir du store :
+   il ne réutilise jamais le DOM de saisie. C'est ce qui permet de
+   maîtriser la pagination sans contraindre l'ergonomie tactile.
+   ------------------------------------------------------------------ */
+
+(function () {
+  var attentesImages = [];
+
+  function el(tag, props) {
+    return PL.el.apply(null, arguments);
+  }
+
+  function texteOu(v, defaut) {
+    var s = v === null || v === undefined ? "" : String(v).trim();
+    return s || (defaut === undefined ? "" : defaut);
+  }
+
+  /* Image chargée depuis IndexedDB : on mémorise la promesse pour
+     n'imprimer qu'une fois toutes les images décodées. */
+  function image(refId, alt, classe) {
+    var img = el("img", { class: classe || "p-photo", alt: alt || "" });
+    attentesImages.push(
+      PL.photos.get(refId).then(function (data) {
+        if (!data) return null;
+        img.src = data;
+        return img.decode ? img.decode().catch(function () {}) : null;
+      }).catch(function () { return null; })
+    );
+    return img;
+  }
+
+  function grillePhotos(refs, legende) {
+    if (!refs || !refs.length) return null;
+    return el("div", { class: "p-photos p-eviter-coupure" },
+      el("div", { class: "p-photos__titre" }, legende),
+      el("div", { class: "p-photos__grille" },
+        refs.map(function (r) { return image(r.id, legende); }))
+    );
+  }
+
+  /* Le titre passe dans le <thead> : ainsi il est réémis en haut de chaque
+     page quand le tableau se scinde. Un simple <h2> au-dessus laisserait la
+     page suivante commencer par des lignes orphelines de leur section. */
+  function tableau(entetes, lignes, titre) {
+    var thead = el("thead", null);
+    if (titre) {
+      thead.appendChild(el("tr", null,
+        el("th", { colspan: entetes.length, class: "p-table__titre", scope: "colgroup" }, titre)));
+    }
+    thead.appendChild(el("tr", null, entetes.map(function (h) {
+      return el("th", h.style ? { style: h.style, scope: "col" } : { scope: "col" },
+        h.libelle || h);
+    })));
+    return el("table", { class: "p-table" }, thead, el("tbody", null, lignes));
+  }
+
+  function blocIdentite(dossier, mode) {
+    var camp = dossier.campagnes[mode];
+    var l = dossier.logement;
+    var complement = [
+      l.batiment && "Bât. " + l.batiment,
+      l.escalier && "Esc. " + l.escalier,
+      l.etage && "Étage " + l.etage,
+      l.porte && "Porte " + l.porte
+    ].filter(Boolean).join(" · ");
+
+    return el("section", { class: "p-identite p-eviter-coupure" },
+      el("div", { class: "p-identite__col" },
+        el("h3", null, "Logement"),
+        el("p", null, texteOu(l.adresse, "—")),
+        complement ? el("p", null, complement) : null
+      ),
+      el("div", { class: "p-identite__col" },
+        el("h3", null, "Bailleur"),
+        el("p", null, texteOu(dossier.bailleur.nom, "—")),
+        el("p", null, texteOu(dossier.bailleur.adresse, ""))
+      ),
+      el("div", { class: "p-identite__col" },
+        el("h3", null, "Locataire"),
+        el("p", null, texteOu(dossier.locataire.nom, "—")),
+        el("p", null, texteOu(
+          mode === "sortie" ? dossier.locataire.adresseSortie : dossier.locataire.adresseEntree, "")),
+        el("p", null, "Date du constat : " + texteOu(PL.dateFr(camp.date), "—"))
+      )
+    );
+  }
+
+  function blocSignatures(dossier, mode) {
+    var camp = dossier.campagnes[mode];
+    function case_(titre, nom, signature) {
+      return el("div", { class: "p-signature" },
+        el("div", { class: "p-signature__titre" }, titre),
+        el("div", { class: "p-signature__mention" }, "« Lu et approuvé »"),
+        el("div", { class: "p-signature__zone" },
+          signature ? el("img", { src: signature, alt: "Signature" }) : null),
+        el("div", { class: "p-signature__nom" }, texteOu(nom, ""))
+      );
+    }
+    return el("section", { class: "p-eviter-coupure", style: "margin-top:6mm" },
+      el("p", { class: "p-mention" },
+        "Fait à " + texteOu(camp.lieu, "……………………") +
+        ", le " + texteOu(PL.dateFr(camp.date), "……/……/…………") +
+        ", en " + texteOu(camp.nbExemplaires, "……") + " exemplaires originaux."),
+      el("div", { class: "p-signatures" },
+        case_("Le bailleur", camp.nomBailleur, camp.signatureBailleur),
+        case_("Le locataire", camp.nomLocataire, camp.signatureLocataire))
+    );
+  }
+
+  function enteteDocument(dossier, mode, titre, sousTitre) {
+    var incomplet = !dossier.campagnes[mode].signeLe;
+    return el("header", { class: "p-entete" },
+      el("h1", null, titre),
+      el("p", { class: "p-entete__sous" }, sousTitre),
+      incomplet ? el("p", { class: "p-entete__mention" },
+        "Document non signé — projet de constat") : null
+    );
+  }
+
+  /* --- état des lieux ------------------------------------------------- */
+
+  function celluleSupport(sup, mode) {
+    var contenu = [];
+    if (sup.revetement) contenu.push(el("div", { class: "p-revetement" }, sup.revetement));
+    if (mode === "sortie") {
+      contenu.push(el("div", { class: "p-etat" },
+        "E : " + texteOu(sup.etatEntree, "—") + "  →  S : " + texteOu(sup.etatSortie, "—")));
+    } else {
+      contenu.push(el("div", { class: "p-etat" }, texteOu(sup.etatEntree, "—")));
+    }
+    return el("td", null, contenu);
+  }
+
+  PL.print = PL.print || {};
+
+  PL.print.edl = function (dossier, mode) {
+    var frag = document.createDocumentFragment();
+    var camp = dossier.campagnes[mode];
+
+    frag.appendChild(enteteDocument(dossier, mode,
+      "État des lieux",
+      "Constat " + PL.deMode(mode) +
+      (camp.date ? " — " + PL.dateFr(camp.date) : "")));
+    frag.appendChild(blocIdentite(dossier, mode));
+
+    /* compteurs */
+    var cpt = dossier.edl.compteurs[mode];
+    var lignesCpt = PL.DEFAULTS.compteurs.map(function (m) {
+      return el("tr", { class: "p-eviter-coupure" },
+        el("td", null, m.libelle),
+        el("td", { class: "p-num" }, texteOu(cpt[m.cle].valeur, "…………")),
+        el("td", null, m.unite));
+    });
+    (cpt.libres || []).forEach(function (l) {
+      if (!l.libelle && !l.valeur) return;
+      lignesCpt.push(el("tr", { class: "p-eviter-coupure" },
+        el("td", null, texteOu(l.libelle, "—")),
+        el("td", { class: "p-num" }, texteOu(l.valeur, "…………")),
+        el("td", null, texteOu(l.unite, ""))));
+    });
+
+    frag.appendChild(el("section", { class: "p-section" },
+      el("h2", null, "Relevé des compteurs"),
+      tableau([
+        { libelle: "Compteur", style: "width:55%" },
+        { libelle: "Relevé", style: "width:30%" },
+        { libelle: "Unité", style: "width:15%" }
+      ], lignesCpt)
+    ));
+
+    /* chauffage et divers */
+    var ch = dossier.edl.chauffage;
+    var div = dossier.edl.divers[mode];
+    var cles = (div.cles || []).filter(function (k) { return k.nombre || k.usage; })
+      .map(function (k) {
+        return texteOu(k.nombre, "…") + " clé(s) pour " + texteOu(k.usage, "……………………");
+      });
+    var presents = [
+      div.boiteAuxLettres && "Boîte aux lettres",
+      div.sonnette && "Sonnette",
+      div.interphone && "Interphone"
+    ].filter(Boolean);
+
+    frag.appendChild(el("section", { class: "p-section p-eviter-coupure" },
+      el("h2", null, "Chauffage, clés et sécurité"),
+      el("div", { class: "p-deux-col" },
+        el("div", null,
+          el("p", null, el("strong", null, "Chauffage : "),
+            texteOu(ch.mode, "—") + (ch.energie ? " · " + ch.energie : "") +
+            (ch.nbRadiateurs ? " · " + ch.nbRadiateurs + " radiateur(s)" : "")),
+          ch.eauChaude ? el("p", null, el("strong", null, "Eau chaude : "), ch.eauChaude) : null,
+          ch.note ? el("p", null, ch.note) : null
+        ),
+        el("div", null,
+          cles.length ? el("p", null, el("strong", null, "Clés : "), cles.join(" ; ")) : null,
+          el("p", null, el("strong", null, "Détecteurs de fumée : "),
+            texteOu(div.detecteurs.nombre, "…") +
+            (div.detecteurs.testRealise ? " — test réalisé" : " — test non réalisé")),
+          div.receptionTV ? el("p", null, el("strong", null, "Réception TV : "), div.receptionTV) : null,
+          presents.length ? el("p", null, el("strong", null, "Présents : "), presents.join(" · ")) : null,
+          div.note ? el("p", null, div.note) : null
+        )
+      )
+    ));
+
+    /* pièces */
+    var lignesPieces = [];
+    dossier.edl.pieces.forEach(function (p) {
+      var remarques = PL.SUPPORTS.map(function (s) {
+        var sup = p.supports[s.cle];
+        var r = mode === "sortie" ? sup.remarqueSortie : sup.remarqueEntree;
+        return r ? s.libelle + " : " + r : null;
+      }).filter(Boolean).join(" · ");
+      lignesPieces.push(el("tr", { class: "p-eviter-coupure" },
+        el("th", { scope: "row" }, p.nom),
+        celluleSupport(p.supports.plafond, mode),
+        celluleSupport(p.supports.murs, mode),
+        celluleSupport(p.supports.sol, mode),
+        el("td", null, remarques)
+      ));
+    });
+
+    frag.appendChild(el("section", { class: "p-section" },
+      el("p", { class: "p-legende" },
+        "Revêtement indiqué au-dessus de l'état. États : N = neuf, B = bon, M = mauvais." +
+        (mode === "sortie" ? " E = entrée, S = sortie." : "")),
+      tableau([
+        { libelle: "Pièce", style: "width:16%" },
+        { libelle: "Plafond", style: "width:17%" },
+        { libelle: "Murs", style: "width:17%" },
+        { libelle: "Sol", style: "width:17%" },
+        { libelle: "Remarques", style: "width:33%" }
+      ], lignesPieces, "État des pièces")
+    ));
+
+    /* équipements */
+    var blocsEquip = [
+      { cle: "cuisine", titre: "Cuisine" },
+      { cle: "salleDEau", titre: "Salle d'eau" },
+      { cle: "wc", titre: "WC" }
+    ];
+    var champPresent = mode === "sortie" ? "presentSortie" : "presentEntree";
+    var contenuEquip = blocsEquip.map(function (b) {
+      var items = dossier.edl.equipements[b.cle].map(function (eq) {
+        return el("li", { class: eq[champPresent] ? "p-coche" : "p-non-coche" },
+          eq.libelle + (eq.precision ? " — " + eq.precision : ""));
+      });
+      return el("div", null, el("h3", null, b.titre), el("ul", { class: "p-liste-cases" }, items));
+    });
+
+    frag.appendChild(el("section", { class: "p-section p-eviter-coupure" },
+      el("h2", null, "Équipements"),
+      el("p", { class: "p-legende" }, "☑ présent et en place · ☐ absent ou non constaté"),
+      el("div", { class: "p-trois-col" }, contenuEquip)
+    ));
+
+    /* photos des pièces */
+    var photos = [];
+    dossier.edl.pieces.forEach(function (p) {
+      var refs = p.photos[mode] || [];
+      if (refs.length) photos.push(grillePhotos(refs, p.nom));
+    });
+    if (photos.length) {
+      frag.appendChild(el("section", { class: "p-section" },
+        el("h2", null, "Photographies"), photos));
+    }
+
+    /* observations */
+    frag.appendChild(el("section", { class: "p-section p-eviter-coupure" },
+      el("h2", null, "Observations et réserves"),
+      el("div", { class: "p-zone-texte" }, texteOu(dossier.observations[mode], ""))
+    ));
+
+    frag.appendChild(blocSignatures(dossier, mode));
+    return frag;
+  };
+
+  /* --- inventaire mobilier --------------------------------------------- */
+
+  PL.print.mobilier = function (dossier, mode) {
+    var frag = document.createDocumentFragment();
+    var camp = dossier.campagnes[mode];
+
+    frag.appendChild(enteteDocument(dossier, mode,
+      "Inventaire et état des meubles",
+      "Annexe obligatoire au bail meublé — article 25-8 de la loi n° 89-462" +
+      (camp.date ? " · " + PL.dateFr(camp.date) : "")));
+    frag.appendChild(blocIdentite(dossier, mode));
+
+    frag.appendChild(el("p", { class: "p-legende" },
+      "États : TB = très bon, B = bon, P = passable, M = mauvais. " +
+      "« Ø » en quantité signale un élément absent."));
+
+    dossier.mobilier.sections.forEach(function (sec) {
+      var lignes = sec.lignes.map(function (l) {
+        return el("tr", { class: "p-eviter-coupure" },
+          el("th", { scope: "row" }, l.libelle),
+          el("td", { class: "p-num" }, l.absent ? "Ø" : texteOu(l.qte, "")),
+          el("td", { class: "p-num" }, l.absent ? "—" : texteOu(l.etatEntree, "")),
+          el("td", { class: "p-num" }, l.absent ? "—" : texteOu(l.etatSortie, "")),
+          el("td", null, texteOu(l.observations, ""))
+        );
+      });
+      frag.appendChild(el("section", { class: "p-section" },
+        tableau([
+          { libelle: "Désignation", style: "width:38%" },
+          { libelle: "Qté", style: "width:9%" },
+          { libelle: "État entrée", style: "width:12%" },
+          { libelle: "État sortie", style: "width:12%" },
+          { libelle: "Observations", style: "width:29%" }
+        ], lignes, sec.titre)
+      ));
+    });
+
+    var photos = [];
+    dossier.mobilier.sections.forEach(function (sec) {
+      sec.lignes.forEach(function (l) {
+        var refs = l.photos[mode] || [];
+        if (refs.length) photos.push(grillePhotos(refs, sec.titre + " — " + l.libelle));
+      });
+    });
+    if (photos.length) {
+      frag.appendChild(el("section", { class: "p-section" },
+        el("h2", null, "Photographies"), photos));
+    }
+
+    frag.appendChild(el("section", { class: "p-section p-eviter-coupure" },
+      el("h2", null, "Observations et réserves"),
+      el("div", { class: "p-zone-texte" }, texteOu(dossier.observations[mode], ""))
+    ));
+
+    frag.appendChild(blocSignatures(dossier, mode));
+    return frag;
+  };
+
+  /* --- écarts entrée / sortie ------------------------------------------ */
+
+  PL.print.calculerEcarts = function (dossier) {
+    var ecarts = [];
+
+    dossier.edl.pieces.forEach(function (p) {
+      PL.SUPPORTS.forEach(function (s) {
+        var sup = p.supports[s.cle];
+        if (!sup.etatEntree || !sup.etatSortie) return;
+        if (PL.RANG_BATI[sup.etatSortie] > PL.RANG_BATI[sup.etatEntree]) {
+          ecarts.push({
+            zone: p.nom,
+            libelle: s.libelle + (sup.revetement ? " (" + sup.revetement + ")" : ""),
+            entree: sup.etatEntree,
+            sortie: sup.etatSortie,
+            observations: [sup.remarqueEntree, sup.remarqueSortie].filter(Boolean).join(" → "),
+            photosEntree: p.photos.entree,
+            photosSortie: p.photos.sortie
+          });
+        }
+      });
+    });
+
+    dossier.mobilier.sections.forEach(function (sec) {
+      sec.lignes.forEach(function (l) {
+        if (l.absent || !l.etatEntree || !l.etatSortie) return;
+        if (PL.RANG_MOBILIER[l.etatSortie] > PL.RANG_MOBILIER[l.etatEntree]) {
+          ecarts.push({
+            zone: sec.titre,
+            libelle: l.libelle,
+            entree: l.etatEntree,
+            sortie: l.etatSortie,
+            observations: l.observations,
+            photosEntree: l.photos.entree,
+            photosSortie: l.photos.sortie
+          });
+        }
+      });
+    });
+
+    return ecarts;
+  };
+
+  PL.print.ecarts = function (dossier) {
+    var liste = PL.print.calculerEcarts(dossier);
+    var frag = document.createDocumentFragment();
+
+    frag.appendChild(enteteDocument(dossier, "sortie",
+      "Récapitulatif des écarts entrée / sortie",
+      "Annexe au constat de sortie — postes dont l'état s'est dégradé"));
+    frag.appendChild(blocIdentite(dossier, "sortie"));
+
+    if (!liste.length) {
+      frag.appendChild(el("p", { class: "p-zone-texte" },
+        "Aucune dégradation constatée entre l'état des lieux d'entrée et celui de sortie."));
+      frag.appendChild(blocSignatures(dossier, "sortie"));
+      return frag;
+    }
+
+    frag.appendChild(el("p", { class: "p-legende" },
+      "Ce récapitulatif est établi automatiquement par comparaison des états relevés " +
+      "à l'entrée et à la sortie. Il ne vaut ni chiffrage, ni application d'une grille de vétusté."));
+
+    liste.forEach(function (e) {
+      var bloc = el("section", { class: "p-ecart p-eviter-coupure" },
+        el("h3", null, e.zone + " — " + e.libelle),
+        el("p", { class: "p-etat" },
+          "État d'entrée : " + e.entree + "   →   État de sortie : " + e.sortie),
+        e.observations ? el("p", null, e.observations) : null
+      );
+      var avant = (e.photosEntree || [])[0];
+      var apres = (e.photosSortie || [])[0];
+      if (avant || apres) {
+        bloc.appendChild(el("div", { class: "p-avant-apres" },
+          el("figure", null,
+            avant ? image(avant.id, "Photo d'entrée") : el("div", { class: "p-photo-absente" }, "—"),
+            el("figcaption", null, "Entrée")),
+          el("figure", null,
+            apres ? image(apres.id, "Photo de sortie") : el("div", { class: "p-photo-absente" }, "—"),
+            el("figcaption", null, "Sortie"))
+        ));
+      }
+      frag.appendChild(bloc);
+    });
+
+    frag.appendChild(blocSignatures(dossier, "sortie"));
+    return frag;
+  };
+
+  /* --- lancement -------------------------------------------------------- */
+
+  PL.print.construire = function (type, dossier, mode) {
+    var conteneur = document.getElementById("conteneur-impression");
+    PL.vider(conteneur);
+    attentesImages = [];
+
+    var docs = [];
+    if (type === "edl") docs.push(PL.print.edl(dossier, mode));
+    else if (type === "mobilier") docs.push(PL.print.mobilier(dossier, mode));
+    else if (type === "ecarts") docs.push(PL.print.ecarts(dossier));
+    else {
+      docs.push(PL.print.edl(dossier, mode));
+      docs.push(PL.print.mobilier(dossier, mode));
+      if (mode === "sortie") docs.push(PL.print.ecarts(dossier));
+    }
+
+    docs.forEach(function (d, i) {
+      var page = el("article", { class: "p-doc" + (i ? " p-doc--nouvelle-page" : "") });
+      page.appendChild(d);
+      conteneur.appendChild(page);
+    });
+
+    /* Pied unique, en position fixe : le moteur d'impression le réémet
+       sur chaque page. Un pied par document se répéterait aussi sur les
+       pages des documents suivants. */
+    conteneur.appendChild(el("div", { class: "p-pied-global" },
+      el("span", null, "Potentia Loan · " +
+        texteOu(dossier.logement.adresse, "dossier sans adresse").split("\n")[0]),
+      el("span", null, "Édité par Potentia Digital")
+    ));
+
+    conteneur.setAttribute("aria-hidden", "true");
+    return Promise.all(attentesImages);
+  };
+
+  PL.print.lancer = function (type, dossier, mode) {
+    PL.toast("Préparation du document…");
+    return PL.print.construire(type, dossier, mode).then(function () {
+      return new Promise(function (r) { setTimeout(r, 120); });
+    }).then(function () {
+      window.print();
+    }).catch(function (e) {
+      PL.toast("Impression impossible : " + (e && e.message ? e.message : "erreur"));
+    });
+  };
+})();
+
+
+/* === 90-app.js === */
+/* ------------------------------------------------------------------
+   Bootstrap : hub du dossier, routes, actions d'en-tête.
+   ------------------------------------------------------------------ */
+
+PL.version = "1.0.0";
+
+/* --- hub du dossier --------------------------------------------------- */
+
+PL.vues.hub = function (dossier, mode) {
+  var prog = PL.progression(dossier, mode);
+  var camp = dossier.campagnes[mode];
+  var base = "/d/" + dossier.id + "/" + mode + "/";
+
+  var racine = PL.el("div", null,
+    PL.el("div", { class: "vue-entete" },
+      PL.el("div", { class: "vue-entete__texte" },
+        PL.el("div", { class: "vue-entete__sur" }, "Dossier"),
+        PL.el("h1", null, dossier.logement.adresse || "Adresse non renseignée"),
+        PL.el("div", { class: "dossier-ligne__meta" },
+          (dossier.locataire.nom ? dossier.locataire.nom + " · " : "") +
+          "modifié le " + PL.formaterDate(dossier.modifieLe))
+      ),
+      PL.el("div", { class: "app-entete__actions" },
+        PL.el("button", {
+          type: "button", class: "btn btn--petit",
+          onclick: function () { PL.router.go("/"); }
+        }, "Mes dossiers")
+      )
+    )
+  );
+
+  /* sélecteur de campagne */
+  racine.appendChild(PL.el("section", { class: "carte" },
+    PL.el("div", { class: "carte__entete" },
+      PL.el("div", { class: "carte__titre" }, PL.el("h2", null, "Constat en cours")),
+      PL.el("div", { class: "app-entete__actions" },
+        ["entree", "sortie"].map(function (m) {
+          return PL.el("button", {
+            type: "button",
+            class: "btn btn--petit" + (m === mode ? " btn--principal" : ""),
+            "aria-current": m === mode ? "true" : "false",
+            onclick: function () { PL.router.go("/d/" + dossier.id + "/" + m); }
+          }, PL.libelleMode(m) + (dossier.campagnes[m].signeLe ? " ✓" : ""));
+        })
+      )
+    ),
+    PL.el("div", { class: "jauge" },
+      PL.el("div", { class: "jauge__barre", style: "width:" + Math.max(2, prog.global.pourcent) + "%" })),
+    PL.el("div", { class: "dossier-ligne__meta", style: "margin-top:6px" },
+      prog.global.faits + " / " + prog.global.total + " postes renseignés — " +
+      prog.global.pourcent + " %"),
+    mode === "sortie" && !dossier.campagnes.entree.signeLe
+      ? PL.el("div", { class: "note" },
+          "Le constat d'entrée n'est pas encore signé. Les états d'entrée affichés en regard " +
+          "restent modifiables depuis l'onglet Entrée.")
+      : null,
+    camp.verrouille
+      ? PL.el("div", { class: "note note--alerte" },
+          "Constat signé le " + PL.formaterDate(camp.signeLe) + " — lecture seule.")
+      : null
+  ));
+
+  /* sections */
+  var grille = PL.el("div", { class: "hub-grille" });
+  PL.SECTIONS.forEach(function (s) {
+    var p = prog[s.cle];
+    var complet = p.total > 0 && p.faits >= p.total;
+    grille.appendChild(PL.el("button", {
+      type: "button", class: "hub-item",
+      onclick: function () { PL.router.go(base + s.cle); }
+    },
+      PL.el("span", null,
+        PL.el("span", { class: "hub-item__titre" }, s.titre),
+        PL.el("span", { class: "hub-item__sous", style: "display:block" }, s.sous)
+      ),
+      PL.el("span", {
+        class: "hub-item__compte" + (complet ? " hub-item__compte--complet" : "")
+      }, p.faits + "/" + p.total)
+    ));
+  });
+  racine.appendChild(grille);
+
+  /* documents */
+  racine.appendChild(PL.el("section", { class: "carte", style: "margin-top:16px" },
+    PL.el("div", { class: "carte__entete" }, PL.el("h2", null, "Documents")),
+    PL.el("p", { class: "dossier-ligne__meta" },
+      "L'impression ouvre la boîte de dialogue du navigateur : choisissez « Enregistrer au " +
+      "format PDF » comme destination, format A4, et activez les en-têtes si vous souhaitez " +
+      "la numérotation des pages."),
+    PL.el("div", { class: "app-entete__actions", style: "margin-top:10px" },
+      PL.el("button", {
+        type: "button", class: "btn btn--principal",
+        onclick: function () { PL.print.lancer("edl", dossier, mode); }
+      }, "Imprimer l'état des lieux"),
+      PL.el("button", {
+        type: "button", class: "btn",
+        onclick: function () { PL.print.lancer("mobilier", dossier, mode); }
+      }, "Imprimer l'inventaire"),
+      PL.el("button", {
+        type: "button", class: "btn",
+        onclick: function () { PL.print.lancer("complet", dossier, mode); }
+      }, "Imprimer le dossier complet"),
+      mode === "sortie" ? PL.el("button", {
+        type: "button", class: "btn",
+        onclick: function () { PL.print.lancer("ecarts", dossier, mode); }
+      }, "Imprimer le récapitulatif des écarts") : null
+    )
+  ));
+
+  /* écarts entrée/sortie */
+  if (mode === "sortie") {
+    var ecarts = PL.print.calculerEcarts(dossier);
+    racine.appendChild(PL.el("section", { class: "carte" },
+      PL.el("div", { class: "carte__entete" },
+        PL.el("h2", null, "Écarts entrée / sortie"),
+        PL.el("span", { class: "hub-item__compte" }, String(ecarts.length))),
+      ecarts.length
+        ? PL.el("div", null,
+            PL.el("p", { class: "dossier-ligne__meta" },
+              "Postes dont l'état s'est dégradé entre l'entrée et la sortie. " +
+              "Ce récapitulatif est imprimable en annexe."),
+            PL.el("ul", { class: "liste-manques" },
+              ecarts.slice(0, 12).map(function (e) {
+                return PL.el("li", null,
+                  e.zone + " — " + e.libelle + " : " + (e.entree || "—") + " → " + (e.sortie || "—"));
+              }),
+              ecarts.length > 12
+                ? PL.el("li", null, "… et " + (ecarts.length - 12) + " autres.") : null)
+          )
+        : PL.el("p", { class: "dossier-ligne__meta" },
+            "Aucune dégradation constatée pour l'instant.")
+    ));
+  }
+
+  /* gestion du dossier */
+  racine.appendChild(PL.el("section", { class: "carte carte--sourde" },
+    PL.el("div", { class: "carte__entete" }, PL.el("h2", null, "Dossier")),
+    PL.el("div", { class: "app-entete__actions" },
+      PL.el("button", {
+        type: "button", class: "btn btn--petit",
+        onclick: function () {
+          PL.toast("Préparation de l'export…");
+          PL.store.exportJSON(dossier.id).then(function (r) {
+            if (r && r.ok) {
+              PL.toast("Dossier exporté — " + r.photos + " photo(s) incluse(s), " +
+                PL.formaterOctets(r.octets) + ".");
+            }
+          });
+        }
+      }, "Exporter en JSON"),
+      PL.el("button", {
+        type: "button", class: "btn btn--petit",
+        onclick: function () {
+          var id = PL.store.duplicate(dossier.id);
+          PL.toast("Dossier dupliqué.");
+          PL.router.go("/d/" + id + "/entree");
+        }
+      }, "Dupliquer")
+    )
+  ));
+
+  return racine;
+};
+
+/* --- routes ------------------------------------------------------------ */
+
+(function () {
+  function avecDossier(params, rendu) {
+    var dossier = PL.store.get(params.id);
+    if (!dossier) {
+      return PL.el("div", { class: "etat-vide" },
+        PL.el("p", null, "Ce dossier n'existe pas ou a été supprimé."),
+        PL.el("button", {
+          type: "button", class: "btn btn--principal",
+          onclick: function () { PL.router.go("/"); }
+        }, "Retour à mes dossiers"));
+    }
+    var mode = params.mode === "sortie" ? "sortie" : "entree";
+    return rendu(dossier, mode);
+  }
+
+  PL.router.define("/", function () { return PL.vues.accueil(); });
+
+  PL.router.define("/d/:id/:mode", function (p) {
+    return avecDossier(p, function (d, m) { return PL.vues.hub(d, m); });
+  });
+
+  PL.router.define("/d/:id/:mode/:section", function (p) {
+    return avecDossier(p, function (d, m) {
+      var vue = PL.vues[p.section];
+      if (!vue) {
+        PL.router.go("/d/" + d.id + "/" + m);
+        return null;
+      }
+      return vue(d, m);
+    });
+  });
+})();
+
+/* --- actions permanentes de l'en-tête ---------------------------------- */
+
+(function () {
+  var zone = document.getElementById("app-actions");
+
+  function themeCourant() {
+    return document.documentElement.getAttribute("data-theme") ||
+      (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches
+        ? "dark" : "light");
+  }
+
+  var bouton = PL.el("button", {
+    type: "button", class: "btn btn--petit btn--discret",
+    "aria-label": "Basculer entre le thème clair et le thème sombre",
+    onclick: function () {
+      var nouveau = themeCourant() === "dark" ? "light" : "dark";
+      document.documentElement.setAttribute("data-theme", nouveau);
+      try { window.localStorage.setItem("potentia-loan:theme", nouveau); } catch (e) {}
+      bouton.textContent = nouveau === "dark" ? "Thème clair" : "Thème sombre";
+    }
+  }, themeCourant() === "dark" ? "Thème clair" : "Thème sombre");
+
+  try {
+    var memo = window.localStorage.getItem("potentia-loan:theme");
+    if (memo) {
+      document.documentElement.setAttribute("data-theme", memo);
+      bouton.textContent = memo === "dark" ? "Thème clair" : "Thème sombre";
+    }
+  } catch (e) {}
+
+  zone.appendChild(PL.el("button", {
+    type: "button", class: "btn btn--petit btn--discret",
+    onclick: function () { PL.router.go("/"); }
+  }, "Mes dossiers"));
+  zone.appendChild(bouton);
+})();
+
+PL.router.demarrer();
+
+})();
+</script>

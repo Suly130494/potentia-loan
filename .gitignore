@@ -1,0 +1,10 @@
+# Artefacts de test générés par l'automatisation navigateur
+.playwright-mcp/
+
+# Python
+__pycache__/
+*.pyc
+
+# Systèmes de fichiers
+.DS_Store
+Thumbs.db
