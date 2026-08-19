@@ -136,18 +136,7 @@ PL.vues.hub = function (dossier, mode) {
   racine.appendChild(PL.el("section", { class: "carte carte--sourde" },
     PL.el("div", { class: "carte__entete" }, PL.el("h2", null, "Dossier")),
     PL.el("div", { class: "app-entete__actions" },
-      PL.el("button", {
-        type: "button", class: "btn btn--petit",
-        onclick: function () {
-          PL.toast("Préparation de l'export…");
-          PL.store.exportJSON(dossier.id).then(function (r) {
-            if (r && r.ok) {
-              PL.toast("Dossier exporté — " + r.photos + " photo(s) incluse(s), " +
-                PL.formaterOctets(r.octets) + ".");
-            }
-          });
-        }
-      }, "Exporter en JSON"),
+      PL.boutonEnvoi(dossier.id),
       PL.el("button", {
         type: "button", class: "btn btn--petit",
         onclick: function () {

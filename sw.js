@@ -1,5 +1,5 @@
 /* Genere par build.py — ne pas editer a la main. */
-var CACHE = "potentia-loan-4618ad6087c0";
+var CACHE = "potentia-loan-6e1506ab4df5";
 var FICHIERS = ["./", "./index.html", "./manifest.webmanifest", "./icon.svg"];
 
 self.addEventListener("install", function (e) {

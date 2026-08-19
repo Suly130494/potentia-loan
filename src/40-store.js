@@ -279,12 +279,12 @@
       return copie.id;
     },
 
-    /* L'export embarque les photos : sans elles, un dossier rouvert sur un
+    /* Le fichier embarque les photos : sans elles, un dossier rouvert sur un
        autre appareil perdrait ses clichés d'entrée, et donc la comparaison
        avant/après du récapitulatif des écarts. */
-    exportJSON: function (id) {
+    construireFichier: function (id) {
       var d = etat.dossiers[id];
-      if (!d) return Promise.resolve({ ok: false, erreur: "Dossier introuvable." });
+      if (!d) return Promise.reject(new Error("Dossier introuvable."));
 
       var ids = PL.photos.idsDuDossier(d);
       return Promise.all(ids.map(function (pid) {
@@ -299,16 +299,75 @@
         var nom = "potentia-loan-" +
           titre(d).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 48) +
           ".json";
-        var blob = new Blob([JSON.stringify(copie, null, 2)], { type: "application/json" });
-        var url = URL.createObjectURL(blob);
+        return {
+          nom: nom === "potentia-loan-.json" ? "potentia-loan.json" : nom,
+          blob: new Blob([JSON.stringify(copie, null, 2)], { type: "application/json" }),
+          photos: paires.filter(Boolean).length,
+          titre: titre(d)
+        };
+      });
+    },
+
+    exportJSON: function (id) {
+      return PL.store.construireFichier(id).then(function (f) {
+        var url = URL.createObjectURL(f.blob);
         var a = document.createElement("a");
         a.href = url;
-        a.download = nom || "potentia-loan.json";
+        a.download = f.nom;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
-        return { ok: true, photos: paires.filter(Boolean).length, octets: blob.size };
+        return { ok: true, photos: f.photos, octets: f.blob.size, methode: "telechargement" };
+      }).catch(function (e) {
+        return { ok: false, erreur: e.message };
+      });
+    },
+
+    /* Partage natif : le dossier part directement vers une messagerie, sans
+       que l'utilisateur ait à retrouver un fichier dans ses téléchargements.
+       Indisponible sur la plupart des navigateurs de bureau : on retombe
+       alors sur le téléchargement, qui reste fonctionnel. */
+    /* Chrome pour ordinateur expose navigator.share mais refuse les fichiers :
+       tester la seule présence de l'API ferait annoncer « Envoyer » à un bouton
+       qui télécharge. On teste donc la capacité réelle, avec un fichier témoin. */
+    partageDisponible: function () {
+      if (!navigator.share || !navigator.canShare) return false;
+      try {
+        return navigator.canShare({
+          files: [new File(["{}"], "test.json", { type: "application/json" })]
+        });
+      } catch (e) {
+        return false;
+      }
+    },
+
+    partager: function (id) {
+      return PL.store.construireFichier(id).then(function (f) {
+        var fichier;
+        try {
+          fichier = new File([f.blob], f.nom, { type: "application/json" });
+        } catch (e) {
+          return PL.store.exportJSON(id);
+        }
+        if (!PL.store.partageDisponible() || !navigator.canShare({ files: [fichier] })) {
+          return PL.store.exportJSON(id);
+        }
+        return navigator.share({
+          files: [fichier],
+          title: "Constat locatif — " + f.titre,
+          text: "Dossier Potentia Loan « " + f.titre + " ». " +
+            "Pour l'ouvrir : " + window.location.origin + window.location.pathname +
+            " puis « Importer un JSON »."
+        }).then(function () {
+          return { ok: true, photos: f.photos, octets: f.blob.size, methode: "partage" };
+        }).catch(function (e) {
+          /* l'utilisateur a fermé la feuille de partage : ce n'est pas une erreur */
+          if (e && e.name === "AbortError") return { ok: true, annule: true };
+          return PL.store.exportJSON(id);
+        });
+      }).catch(function (e) {
+        return { ok: false, erreur: e.message };
       });
     },
 

@@ -27,6 +27,32 @@ PL.deMode = function (mode) {
   return mode === "sortie" ? "de sortie" : "d'entrée";
 };
 
+/* Bouton d'envoi du dossier. Un seul bouton, dont le libellé suit ce que
+   l'appareil sait faire : partage natif sur mobile et tablette, simple
+   téléchargement ailleurs. Deux boutons distincts feraient doublon sur les
+   appareils où le partage n'existe pas. */
+PL.boutonEnvoi = function (id, classe) {
+  var partage = PL.store.partageDisponible();
+  var bouton = PL.el("button", {
+    type: "button", class: classe || "btn btn--petit",
+    onclick: function () {
+      bouton.disabled = true;
+      PL.toast("Préparation du dossier…");
+      (partage ? PL.store.partager(id) : PL.store.exportJSON(id)).then(function (r) {
+        bouton.disabled = false;
+        if (!r || !r.ok) {
+          PL.toast("Envoi impossible : " + ((r && r.erreur) || "erreur inconnue"));
+          return;
+        }
+        if (r.annule) return;
+        PL.toast((r.methode === "partage" ? "Dossier envoyé" : "Dossier téléchargé") +
+          " — " + r.photos + " photo(s), " + PL.formaterOctets(r.octets) + ".");
+      });
+    }
+  }, partage ? "Envoyer le dossier" : "Exporter le dossier");
+  return bouton;
+};
+
 /* En-tête commun aux vues d'une section de dossier. */
 PL.enteteDossier = function (dossier, mode, section) {
   var verrou = PL.estVerrouille(dossier, mode);
@@ -158,18 +184,7 @@ PL.vues.accueil = function () {
             PL.router.go("/d/" + d.id + "/" + (d.signeEntree ? "sortie" : "entree"));
           }
         }, d.signeEntree ? "Ouvrir (sortie)" : "Ouvrir"),
-        PL.el("button", {
-          type: "button", class: "btn btn--petit",
-          onclick: function () {
-            PL.toast("Préparation de l'export…");
-            PL.store.exportJSON(d.id).then(function (r) {
-              if (r && r.ok) {
-                PL.toast("Dossier exporté — " + r.photos + " photo(s) incluse(s), " +
-                  PL.formaterOctets(r.octets) + ".");
-              }
-            });
-          }
-        }, "Exporter"),
+        PL.boutonEnvoi(d.id),
         PL.el("button", {
           type: "button", class: "btn btn--petit",
           onclick: function () {

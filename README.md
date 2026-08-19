@@ -20,7 +20,10 @@ autonome qui fonctionne hors ligne.
 - Photos compressées rattachées aux pièces, aux lignes d'inventaire et aux compteurs.
 - Signatures tactiles bailleur et locataire, puis verrouillage du constat.
 - Impression A4 : état des lieux, inventaire, dossier complet.
-- Export / import du dossier en JSON, photos incluses.
+- **Envoi du dossier** : sur tablette et téléphone, le bouton ouvre le partage
+  natif (messagerie, mail, AirDrop) avec le dossier en pièce jointe, photos
+  comprises. Sur ordinateur, il télécharge le fichier. Le destinataire ouvre
+  l'application et choisit « Importer un JSON ».
 
 L'outil démarre **vierge** : aucune donnée personnelle n'est codée en dur.
 
