@@ -383,6 +383,10 @@ p { margin: 0 0 var(--pas); }
   border: 1px solid var(--bordure-forte); color: var(--texte-sourd);
 }
 .badge--signe { border-color: var(--ok); color: var(--ok); }
+.badge--alerte {
+  border-color: var(--danger); color: var(--danger);
+  background: var(--danger-fond);
+}
 .badge--sortie { border-color: var(--focus); color: var(--focus); }
 
 /* --- mise en page deux colonnes (tablette et plus) ------------------ */
@@ -1082,6 +1086,9 @@ PL.nouveauDossier = function () {
     schemaVersion: PL.SCHEMA_VERSION,
     creeLe: maintenant,
     modifieLe: maintenant,
+    /* Date du dernier envoi hors de cet appareil. Reste null tant que le
+       dossier n'existe qu'ici — c'est ce qui permet d'alerter. */
+    sauvegardeLe: null,
     archive: false,
     logement: { adresse: "", batiment: "", escalier: "", etage: "", porte: "" },
     bailleur: { nom: "", adresse: "" },
@@ -1319,6 +1326,31 @@ PL.nouveauDossier = function () {
     return "Dossier sans adresse";
   }
 
+  /* Nom de fichier pensé pour être relu des années plus tard, dans une boîte
+     mail ou un espace de stockage : la date d'abord pour le tri chronologique,
+     puis la nature du constat, puis l'adresse. */
+  function nomFichier(dossier) {
+    var campagne = dossier.campagnes.sortie.date || dossier.campagnes.sortie.signeLe
+      ? "sortie" : "entree";
+    var date = dossier.campagnes[campagne].date ||
+      (dossier.creeLe || "").slice(0, 10) || "sans-date";
+    var lieu = titre(dossier).toLowerCase()
+      /* Les diacritiques combinants sont decrits par leurs points de code :
+         ecrits litteralement, ils survivent mal aux outils et aux encodages. */
+      .normalize("NFD").replace(new RegExp("[\u0300-\u036f]", "g"), "")
+      .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 48);
+    return [date, "etat-des-lieux", campagne, lieu]
+      .filter(Boolean).join("-").replace(/-+/g, "-") + ".json";
+  }
+
+  /* Un dossier est « à sauvegarder » tant qu'il n'est jamais sorti de
+     l'appareil, ou s'il a été modifié depuis le dernier envoi. */
+  function statutSauvegarde(dossier) {
+    if (!dossier.sauvegardeLe) return "jamais";
+    if ((dossier.modifieLe || "") > dossier.sauvegardeLe) return "obsolete";
+    return "a-jour";
+  }
+
   /* --- interface publique ------------------------------------------ */
 
   PL.store = {
@@ -1332,6 +1364,8 @@ PL.nouveauDossier = function () {
             locataire: (d.locataire.nom || "").trim(),
             modifieLe: d.modifieLe,
             archive: !!d.archive,
+            sauvegardeLe: d.sauvegardeLe || null,
+            statutSauvegarde: statutSauvegarde(d),
             signeEntree: !!d.campagnes.entree.signeLe,
             signeSortie: !!d.campagnes.sortie.signeLe,
             avancement: PL.progression(d, d.campagnes.sortie.signeLe ||
@@ -1403,16 +1437,28 @@ PL.nouveauDossier = function () {
         copie.photosIncluses = {};
         paires.filter(Boolean).forEach(function (p) { copie.photosIncluses[p[0]] = p[1]; });
 
-        var nom = "potentia-loan-" +
-          titre(d).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 48) +
-          ".json";
         return {
-          nom: nom === "potentia-loan-.json" ? "potentia-loan.json" : nom,
+          nom: nomFichier(d),
           blob: new Blob([JSON.stringify(copie, null, 2)], { type: "application/json" }),
           photos: paires.filter(Boolean).length,
           titre: titre(d)
         };
       });
+    },
+
+    /* Enregistre qu'une copie du dossier est sortie de l'appareil. Sans
+       horodatage du modifieLe : archiver n'est pas modifier le constat. */
+    marquerSauvegarde: function (id) {
+      var d = etat.dossiers[id];
+      if (!d) return;
+      d.sauvegardeLe = new Date().toISOString();
+      sauver();
+      notifier();
+    },
+
+    statut: function (id) {
+      var d = etat.dossiers[id];
+      return d ? statutSauvegarde(d) : null;
     },
 
     exportJSON: function (id) {
@@ -1425,7 +1471,9 @@ PL.nouveauDossier = function () {
         a.click();
         document.body.removeChild(a);
         setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
-        return { ok: true, photos: f.photos, octets: f.blob.size, methode: "telechargement" };
+        PL.store.marquerSauvegarde(id);
+        return { ok: true, photos: f.photos, octets: f.blob.size,
+                 nom: f.nom, methode: "telechargement" };
       }).catch(function (e) {
         return { ok: false, erreur: e.message };
       });
@@ -1467,7 +1515,9 @@ PL.nouveauDossier = function () {
             "Pour l'ouvrir : " + window.location.origin + window.location.pathname +
             " puis « Importer un JSON »."
         }).then(function () {
-          return { ok: true, photos: f.photos, octets: f.blob.size, methode: "partage" };
+          PL.store.marquerSauvegarde(id);
+          return { ok: true, photos: f.photos, octets: f.blob.size,
+                   nom: f.nom, methode: "partage" };
         }).catch(function (e) {
           /* l'utilisateur a fermé la feuille de partage : ce n'est pas une erreur */
           if (e && e.name === "AbortError") return { ok: true, annule: true };
@@ -2181,6 +2231,27 @@ PL.deMode = function (mode) {
   return mode === "sortie" ? "de sortie" : "d'entrée";
 };
 
+/* Le dossier n'existe que dans ce navigateur : tant qu'aucune copie n'en est
+   sortie, une panne ou un nettoyage du téléphone l'efface sans recours. Le
+   badge rend cet état visible en permanence plutôt qu'au moment du drame. */
+PL.badgeSauvegarde = function (resume) {
+  if (resume.statutSauvegarde === "jamais") {
+    return PL.el("span", {
+      class: "badge badge--alerte",
+      title: "Ce dossier n'existe que sur cet appareil"
+    }, "Jamais sauvegardé");
+  }
+  if (resume.statutSauvegarde === "obsolete") {
+    return PL.el("span", {
+      class: "badge badge--alerte",
+      title: "Modifié depuis le dernier envoi du " + PL.formaterDate(resume.sauvegardeLe)
+    }, "Sauvegarde à refaire");
+  }
+  return PL.el("span", {
+    class: "badge", title: "Dernier envoi le " + PL.formaterDate(resume.sauvegardeLe)
+  }, "Sauvegardé");
+};
+
 /* Bouton d'envoi du dossier. Un seul bouton, dont le libellé suit ce que
    l'appareil sait faire : partage natif sur mobile et tablette, simple
    téléchargement ailleurs. Deux boutons distincts feraient doublon sur les
@@ -2201,6 +2272,9 @@ PL.boutonEnvoi = function (id, classe) {
         if (r.annule) return;
         PL.toast((r.methode === "partage" ? "Dossier envoyé" : "Dossier téléchargé") +
           " — " + r.photos + " photo(s), " + PL.formaterOctets(r.octets) + ".");
+        /* Le badge de sauvegarde vient de changer d'état : sans ce rendu, il
+           continuerait d'afficher « Jamais sauvegardé » après un envoi réussi. */
+        PL.router.rafraichir();
       });
     }
   }, partage ? "Envoyer le dossier" : "Exporter le dossier");
@@ -2305,9 +2379,27 @@ PL.vues.accueil = function () {
   }
 
   racine.appendChild(blocStockage());
+  var aSauvegarder = actifs.filter(function (d) {
+    return d.statutSauvegarde !== "a-jour";
+  }).length;
+  if (aSauvegarder) {
+    racine.appendChild(PL.el("div", { class: "note note--alerte" },
+      aSauvegarder === 1
+        ? "Un dossier n'a pas de copie hors de cet appareil. Envoyez-le-vous par mail : "
+          + "c'est ce qui vous permettra de le retrouver dans plusieurs années."
+        : aSauvegarder + " dossiers n'ont pas de copie hors de cet appareil. Envoyez-les-vous "
+          + "par mail : c'est ce qui vous permettra de les retrouver dans plusieurs années."));
+  }
+
   racine.appendChild(PL.el("div", { class: "note" },
-    "Les dossiers sont enregistrés dans ce navigateur uniquement. " +
-    "Exportez-les en JSON pour les sauvegarder ou les transférer sur un autre appareil."));
+    PL.el("span", null,
+      "Les dossiers sont enregistrés dans ce navigateur uniquement. "),
+    PL.el("button", {
+      type: "button", class: "btn btn--petit btn--discret",
+      style: "text-decoration:underline",
+      onclick: function () { PL.router.go("/aide"); }
+    }, "Comment retrouver un dossier dans plusieurs années ?")
+  ));
 
   return racine;
 
@@ -2321,7 +2413,9 @@ PL.vues.accueil = function () {
     var badges = PL.el("span", null,
       d.signeEntree ? PL.el("span", { class: "badge badge--signe" }, "Entrée signée") : null,
       " ",
-      d.signeSortie ? PL.el("span", { class: "badge badge--sortie" }, "Sortie signée") : null
+      d.signeSortie ? PL.el("span", { class: "badge badge--sortie" }, "Sortie signée") : null,
+      " ",
+      PL.badgeSauvegarde(d)
     );
     return PL.el("div", { class: "dossier-ligne" },
       PL.el("div", { class: "dossier-ligne__info" },
@@ -3524,8 +3618,40 @@ PL.vues.signatures = function (dossier, mode) {
             camp.verrouille = true;
             camp.signeLe = new Date().toISOString();
           });
-          PL.toast("Constat signé et verrouillé.");
           PL.router.rafraichir();
+          /* Le seul instant où l'on pense encore à archiver, c'est
+             juste après avoir signé. */
+          PL.dialogue({
+            titre: "Constat signé — mettez-le à l'abri",
+            corps: PL.el("div", null,
+              PL.el("p", null,
+                "Ce dossier n'existe que dans ce navigateur. Envoyez-le-vous "
+                + "par mail dès maintenant : c'est ce qui vous permettra de le "
+                + "retrouver le jour de la sortie, dans un an ou dans cinq."),
+              PL.el("p", { style: "margin-bottom:0" },
+                "Pensez aussi à imprimer le document en PDF et à le transmettre "
+                + "à l'autre partie.")),
+            actions: [
+              { libelle: "Plus tard" },
+              {
+                libelle: "Voir la notice",
+                onClick: function () { PL.router.go("/aide"); }
+              },
+              {
+                libelle: "Envoyer le dossier", principal: true,
+                onClick: function () {
+                  var envoi = PL.store.partageDisponible()
+                    ? PL.store.partager(dossier.id)
+                    : PL.store.exportJSON(dossier.id);
+                  envoi.then(function (r) {
+                    if (r && r.ok && !r.annule) {
+                      PL.toast("Dossier sauvegardé — conservez ce message.");
+                    }
+                  });
+                }
+              }
+            ]
+          });
         });
       }
     }, "Signer et verrouiller"));
@@ -3538,6 +3664,130 @@ PL.vues.signatures = function (dossier, mode) {
   carteSign.appendChild(actions);
   racine.appendChild(carteSign);
   return racine;
+};
+
+
+/* === 65-view-aide.js === */
+/* ------------------------------------------------------------------
+   Notice « retrouver mon dossier ». Le constat de sortie a lieu des
+   années après celui d'entrée : personne ne se souviendra de la marche
+   à suivre. Elle est donc écrite dans l'application elle-même.
+   ------------------------------------------------------------------ */
+
+PL.vues.aide = function () {
+  var persistant = null;
+  var blocPersistance = PL.el("p", { class: "dossier-ligne__meta" },
+    "Vérification de la protection du stockage…");
+
+  if (navigator.storage && navigator.storage.persisted) {
+    navigator.storage.persisted().then(function (ok) {
+      persistant = ok;
+      PL.vider(blocPersistance);
+      blocPersistance.appendChild(document.createTextNode(
+        ok
+          ? "Sur cet appareil, le stockage de l'application est protégé contre "
+            + "l'effacement automatique."
+          : "Sur cet appareil, le stockage n'est pas protégé contre l'effacement "
+            + "automatique. Installez l'application sur l'écran d'accueil et gardez "
+            + "toujours une copie du dossier hors de l'appareil."));
+    });
+  } else {
+    blocPersistance.textContent =
+      "Ce navigateur ne permet pas de savoir si le stockage est protégé. "
+      + "Gardez toujours une copie du dossier hors de l'appareil.";
+  }
+
+  function etape(numero, titre) {
+    var contenus = Array.prototype.slice.call(arguments, 2);
+    return PL.el("section", { class: "carte" },
+      PL.el("div", { class: "carte__entete" },
+        PL.el("div", { class: "carte__titre" },
+          PL.el("span", { class: "hub-item__compte" }, String(numero)),
+          PL.el("h2", null, titre))),
+      contenus);
+  }
+
+  return PL.el("div", null,
+    PL.el("div", { class: "vue-entete" },
+      PL.el("div", { class: "vue-entete__texte" },
+        PL.el("div", { class: "vue-entete__sur" }, "Notice"),
+        PL.el("h1", null, "Retrouver un dossier dans plusieurs années")),
+      PL.el("div", { class: "app-entete__actions" },
+        PL.el("button", {
+          type: "button", class: "btn btn--petit",
+          onclick: function () { PL.router.go("/"); }
+        }, "Mes dossiers"))
+    ),
+
+    PL.el("div", { class: "note note--alerte" },
+      "Un dossier n'existe que dans le navigateur de l'appareil qui l'a créé. "
+      + "Changer de téléphone, réinstaller le navigateur ou effacer les données de "
+      + "navigation le supprime définitivement. La seule protection est d'en garder "
+      + "une copie ailleurs."),
+
+    etape(1, "Installer l'application sur l'écran d'accueil",
+      PL.el("div", null,
+        PL.el("p", null,
+          "À faire une fois, avant le premier constat. Sans cela, un iPhone efface "
+          + "les données d'un site qui n'a pas été ouvert pendant sept jours."),
+        PL.el("p", null,
+          PL.el("strong", null, "Sur iPhone et iPad : "),
+          "bouton Partager (le carré avec une flèche), puis « Sur l'écran d'accueil »."),
+        PL.el("p", null,
+          PL.el("strong", null, "Sur Android : "),
+          "menu à trois points, puis « Installer l'application » ou "
+          + "« Ajouter à l'écran d'accueil »."),
+        blocPersistance)),
+
+    etape(2, "Sauvegarder le dossier à la fin du constat",
+      PL.el("div", null,
+        PL.el("p", null,
+          "Depuis le sommaire du dossier, appuyez sur « Envoyer le dossier », "
+          + "puis choisissez Mail. Envoyez-le-vous à vous-même, et mettez en copie "
+          + "l'autre partie."),
+        PL.el("p", null,
+          "Deux personnes ont alors la copie : si l'une la perd, l'autre l'a. "
+          + "Une boîte mail survit aux changements de téléphone, et se cherche."),
+        PL.el("p", null,
+          PL.el("strong", null, "Objet du message : "),
+          "reprenez le nom du fichier, il contient déjà la date, la nature du constat "
+          + "et l'adresse."),
+        PL.el("p", { style: "margin-bottom:0" },
+          "Envoyez également le PDF : c'est lui le document signé qui fait foi, et il "
+          + "se lit partout. Le fichier de dossier, lui, sert à reprendre le travail."))),
+
+    etape(3, "Rouvrir le dossier des années plus tard",
+      PL.el("p", null,
+        "Cherchez « état des lieux » dans votre boîte mail, puis ouvrez le message."),
+      PL.el("ol", { class: "liste-manques", style: "font-size:0.9rem" },
+          PL.el("li", null,
+            "Appuyez longuement sur la pièce jointe qui se termine par « .json », "
+            + "puis enregistrez-la dans Fichiers."),
+          PL.el("li", null,
+            "Ouvrez Potentia Loan depuis l'écran d'accueil."),
+          PL.el("li", null,
+            "Appuyez sur « Importer un JSON », puis sélectionnez le fichier enregistré."),
+          PL.el("li", null,
+            "Le dossier réapparaît avec ses photos. Basculez sur « Sortie » : "
+            + "chaque état d'entrée s'affiche en regard, il n'y a plus qu'à constater."))),
+
+    etape(4, "Ce qu'il faut conserver",
+      PL.el("div", null,
+        PL.el("p", null,
+          PL.el("strong", null, "Le PDF signé"),
+          " — c'est la pièce qui fait foi entre les parties. Chacune doit en avoir "
+          + "un exemplaire, sur papier ou sous forme électronique."),
+        PL.el("p", { style: "margin-bottom:0" },
+          PL.el("strong", null, "Le fichier de dossier (.json)"),
+          " — il n'a pas de valeur juridique et ne remplace pas le PDF, mais lui "
+          + "seul permet de rouvrir le constat pour établir celui de sortie."))),
+
+    PL.el("div", { class: "barre-actions" },
+      PL.el("button", {
+        type: "button", class: "btn btn--principal",
+        onclick: function () { PL.router.go("/"); }
+      }, "Retour à mes dossiers"))
+  );
 };
 
 
@@ -4214,6 +4464,8 @@ PL.vues.hub = function (dossier, mode) {
 
   PL.router.define("/", function () { return PL.vues.accueil(); });
 
+  PL.router.define("/aide", function () { return PL.vues.aide(); });
+
   PL.router.define("/d/:id/:mode", function (p) {
     return avecDossier(p, function (d, m) { return PL.vues.hub(d, m); });
   });
@@ -4264,7 +4516,24 @@ PL.vues.hub = function (dossier, mode) {
     type: "button", class: "btn btn--petit btn--discret",
     onclick: function () { PL.router.go("/"); }
   }, "Mes dossiers"));
+  zone.appendChild(PL.el("button", {
+    type: "button", class: "btn btn--petit btn--discret",
+    onclick: function () { PL.router.go("/aide"); }
+  }, "Aide"));
   zone.appendChild(bouton);
+})();
+
+/* Demande au navigateur de conserver durablement les données. Sans cela,
+   un nettoyage automatique peut effacer un dossier que personne n'a rouvert
+   depuis des mois — exactement le cas d'un constat d'entrée en attente de
+   sa sortie. Refus éventuel sans conséquence : l'application fonctionne
+   comme avant, et la notice insiste sur la copie hors de l'appareil. */
+(function () {
+  if (!navigator.storage || !navigator.storage.persist) return;
+  navigator.storage.persisted().then(function (dejaAccorde) {
+    if (dejaAccorde) return null;
+    return navigator.storage.persist();
+  }).catch(function () { /* rien à faire : ce n'est qu'une demande */ });
 })();
 
 PL.router.demarrer();

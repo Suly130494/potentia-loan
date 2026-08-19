@@ -27,6 +27,27 @@ PL.deMode = function (mode) {
   return mode === "sortie" ? "de sortie" : "d'entrée";
 };
 
+/* Le dossier n'existe que dans ce navigateur : tant qu'aucune copie n'en est
+   sortie, une panne ou un nettoyage du téléphone l'efface sans recours. Le
+   badge rend cet état visible en permanence plutôt qu'au moment du drame. */
+PL.badgeSauvegarde = function (resume) {
+  if (resume.statutSauvegarde === "jamais") {
+    return PL.el("span", {
+      class: "badge badge--alerte",
+      title: "Ce dossier n'existe que sur cet appareil"
+    }, "Jamais sauvegardé");
+  }
+  if (resume.statutSauvegarde === "obsolete") {
+    return PL.el("span", {
+      class: "badge badge--alerte",
+      title: "Modifié depuis le dernier envoi du " + PL.formaterDate(resume.sauvegardeLe)
+    }, "Sauvegarde à refaire");
+  }
+  return PL.el("span", {
+    class: "badge", title: "Dernier envoi le " + PL.formaterDate(resume.sauvegardeLe)
+  }, "Sauvegardé");
+};
+
 /* Bouton d'envoi du dossier. Un seul bouton, dont le libellé suit ce que
    l'appareil sait faire : partage natif sur mobile et tablette, simple
    téléchargement ailleurs. Deux boutons distincts feraient doublon sur les
@@ -47,6 +68,9 @@ PL.boutonEnvoi = function (id, classe) {
         if (r.annule) return;
         PL.toast((r.methode === "partage" ? "Dossier envoyé" : "Dossier téléchargé") +
           " — " + r.photos + " photo(s), " + PL.formaterOctets(r.octets) + ".");
+        /* Le badge de sauvegarde vient de changer d'état : sans ce rendu, il
+           continuerait d'afficher « Jamais sauvegardé » après un envoi réussi. */
+        PL.router.rafraichir();
       });
     }
   }, partage ? "Envoyer le dossier" : "Exporter le dossier");
@@ -151,9 +175,27 @@ PL.vues.accueil = function () {
   }
 
   racine.appendChild(blocStockage());
+  var aSauvegarder = actifs.filter(function (d) {
+    return d.statutSauvegarde !== "a-jour";
+  }).length;
+  if (aSauvegarder) {
+    racine.appendChild(PL.el("div", { class: "note note--alerte" },
+      aSauvegarder === 1
+        ? "Un dossier n'a pas de copie hors de cet appareil. Envoyez-le-vous par mail : "
+          + "c'est ce qui vous permettra de le retrouver dans plusieurs années."
+        : aSauvegarder + " dossiers n'ont pas de copie hors de cet appareil. Envoyez-les-vous "
+          + "par mail : c'est ce qui vous permettra de les retrouver dans plusieurs années."));
+  }
+
   racine.appendChild(PL.el("div", { class: "note" },
-    "Les dossiers sont enregistrés dans ce navigateur uniquement. " +
-    "Exportez-les en JSON pour les sauvegarder ou les transférer sur un autre appareil."));
+    PL.el("span", null,
+      "Les dossiers sont enregistrés dans ce navigateur uniquement. "),
+    PL.el("button", {
+      type: "button", class: "btn btn--petit btn--discret",
+      style: "text-decoration:underline",
+      onclick: function () { PL.router.go("/aide"); }
+    }, "Comment retrouver un dossier dans plusieurs années ?")
+  ));
 
   return racine;
 
@@ -167,7 +209,9 @@ PL.vues.accueil = function () {
     var badges = PL.el("span", null,
       d.signeEntree ? PL.el("span", { class: "badge badge--signe" }, "Entrée signée") : null,
       " ",
-      d.signeSortie ? PL.el("span", { class: "badge badge--sortie" }, "Sortie signée") : null
+      d.signeSortie ? PL.el("span", { class: "badge badge--sortie" }, "Sortie signée") : null,
+      " ",
+      PL.badgeSauvegarde(d)
     );
     return PL.el("div", { class: "dossier-ligne" },
       PL.el("div", { class: "dossier-ligne__info" },

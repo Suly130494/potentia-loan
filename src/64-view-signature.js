@@ -247,8 +247,40 @@ PL.vues.signatures = function (dossier, mode) {
             camp.verrouille = true;
             camp.signeLe = new Date().toISOString();
           });
-          PL.toast("Constat signé et verrouillé.");
           PL.router.rafraichir();
+          /* Le seul instant où l'on pense encore à archiver, c'est
+             juste après avoir signé. */
+          PL.dialogue({
+            titre: "Constat signé — mettez-le à l'abri",
+            corps: PL.el("div", null,
+              PL.el("p", null,
+                "Ce dossier n'existe que dans ce navigateur. Envoyez-le-vous "
+                + "par mail dès maintenant : c'est ce qui vous permettra de le "
+                + "retrouver le jour de la sortie, dans un an ou dans cinq."),
+              PL.el("p", { style: "margin-bottom:0" },
+                "Pensez aussi à imprimer le document en PDF et à le transmettre "
+                + "à l'autre partie.")),
+            actions: [
+              { libelle: "Plus tard" },
+              {
+                libelle: "Voir la notice",
+                onClick: function () { PL.router.go("/aide"); }
+              },
+              {
+                libelle: "Envoyer le dossier", principal: true,
+                onClick: function () {
+                  var envoi = PL.store.partageDisponible()
+                    ? PL.store.partager(dossier.id)
+                    : PL.store.exportJSON(dossier.id);
+                  envoi.then(function (r) {
+                    if (r && r.ok && !r.annule) {
+                      PL.toast("Dossier sauvegardé — conservez ce message.");
+                    }
+                  });
+                }
+              }
+            ]
+          });
         });
       }
     }, "Signer et verrouiller"));

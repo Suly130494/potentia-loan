@@ -38,10 +38,27 @@ premier chargement. Utile en cave, en sous-sol ou dans un logement sans couvertu
 
 Tout reste dans le navigateur de l'appareil : les données dans `localStorage`, les photos
 dans `IndexedDB`. Aucun serveur, aucune requête réseau, aucun compte. La sauvegarde hors
-appareil se fait par export d'un fichier JSON.
+appareil se fait par envoi d'un fichier JSON.
 
-Conséquence à connaître : **effacer les données du navigateur efface les dossiers**.
-Exportez un dossier terminé.
+**Un dossier n'existe que sur l'appareil qui l'a créé.** Changer de téléphone, réinstaller
+le navigateur ou effacer les données de navigation le supprime définitivement. Safari va
+plus loin : il efface les données d'un site non visité pendant sept jours, sauf si
+l'application a été installée sur l'écran d'accueil.
+
+L'application prend trois précautions contre cela :
+
+- elle demande au navigateur de conserver durablement ses données (`storage.persist`) ;
+- chaque dossier porte un badge tant qu'aucune copie n'est sortie de l'appareil, et
+  l'écran d'accueil affiche une alerte ;
+- après signature, elle propose immédiatement d'envoyer le dossier.
+
+La notice intégrée (bouton **Aide**) explique la marche à suivre pour retrouver et rouvrir
+un dossier plusieurs années plus tard — c'est le cas d'usage réel : le constat de sortie a
+lieu longtemps après celui d'entrée.
+
+Méthode recommandée : s'envoyer le dossier par mail, en mettant l'autre partie en copie.
+Deux personnes détiennent alors la copie, une boîte mail survit aux changements de
+téléphone, et une recherche suffit à la retrouver.
 
 ## Développement
 

@@ -367,6 +367,10 @@ p { margin: 0 0 var(--pas); }
   border: 1px solid var(--bordure-forte); color: var(--texte-sourd);
 }
 .badge--signe { border-color: var(--ok); color: var(--ok); }
+.badge--alerte {
+  border-color: var(--danger); color: var(--danger);
+  background: var(--danger-fond);
+}
 .badge--sortie { border-color: var(--focus); color: var(--focus); }
 
 /* --- mise en page deux colonnes (tablette et plus) ------------------ */

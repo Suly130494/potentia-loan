@@ -237,6 +237,9 @@ PL.nouveauDossier = function () {
     schemaVersion: PL.SCHEMA_VERSION,
     creeLe: maintenant,
     modifieLe: maintenant,
+    /* Date du dernier envoi hors de cet appareil. Reste null tant que le
+       dossier n'existe qu'ici — c'est ce qui permet d'alerter. */
+    sauvegardeLe: null,
     archive: false,
     logement: { adresse: "", batiment: "", escalier: "", etage: "", porte: "" },
     bailleur: { nom: "", adresse: "" },

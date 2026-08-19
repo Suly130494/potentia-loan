@@ -170,6 +170,8 @@ PL.vues.hub = function (dossier, mode) {
 
   PL.router.define("/", function () { return PL.vues.accueil(); });
 
+  PL.router.define("/aide", function () { return PL.vues.aide(); });
+
   PL.router.define("/d/:id/:mode", function (p) {
     return avecDossier(p, function (d, m) { return PL.vues.hub(d, m); });
   });
@@ -220,7 +222,24 @@ PL.vues.hub = function (dossier, mode) {
     type: "button", class: "btn btn--petit btn--discret",
     onclick: function () { PL.router.go("/"); }
   }, "Mes dossiers"));
+  zone.appendChild(PL.el("button", {
+    type: "button", class: "btn btn--petit btn--discret",
+    onclick: function () { PL.router.go("/aide"); }
+  }, "Aide"));
   zone.appendChild(bouton);
+})();
+
+/* Demande au navigateur de conserver durablement les données. Sans cela,
+   un nettoyage automatique peut effacer un dossier que personne n'a rouvert
+   depuis des mois — exactement le cas d'un constat d'entrée en attente de
+   sa sortie. Refus éventuel sans conséquence : l'application fonctionne
+   comme avant, et la notice insiste sur la copie hors de l'appareil. */
+(function () {
+  if (!navigator.storage || !navigator.storage.persist) return;
+  navigator.storage.persisted().then(function (dejaAccorde) {
+    if (dejaAccorde) return null;
+    return navigator.storage.persist();
+  }).catch(function () { /* rien à faire : ce n'est qu'une demande */ });
 })();
 
 PL.router.demarrer();

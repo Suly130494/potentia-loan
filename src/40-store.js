@@ -212,6 +212,31 @@
     return "Dossier sans adresse";
   }
 
+  /* Nom de fichier pensé pour être relu des années plus tard, dans une boîte
+     mail ou un espace de stockage : la date d'abord pour le tri chronologique,
+     puis la nature du constat, puis l'adresse. */
+  function nomFichier(dossier) {
+    var campagne = dossier.campagnes.sortie.date || dossier.campagnes.sortie.signeLe
+      ? "sortie" : "entree";
+    var date = dossier.campagnes[campagne].date ||
+      (dossier.creeLe || "").slice(0, 10) || "sans-date";
+    var lieu = titre(dossier).toLowerCase()
+      /* Les diacritiques combinants sont decrits par leurs points de code :
+         ecrits litteralement, ils survivent mal aux outils et aux encodages. */
+      .normalize("NFD").replace(new RegExp("[\u0300-\u036f]", "g"), "")
+      .replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 48);
+    return [date, "etat-des-lieux", campagne, lieu]
+      .filter(Boolean).join("-").replace(/-+/g, "-") + ".json";
+  }
+
+  /* Un dossier est « à sauvegarder » tant qu'il n'est jamais sorti de
+     l'appareil, ou s'il a été modifié depuis le dernier envoi. */
+  function statutSauvegarde(dossier) {
+    if (!dossier.sauvegardeLe) return "jamais";
+    if ((dossier.modifieLe || "") > dossier.sauvegardeLe) return "obsolete";
+    return "a-jour";
+  }
+
   /* --- interface publique ------------------------------------------ */
 
   PL.store = {
@@ -225,6 +250,8 @@
             locataire: (d.locataire.nom || "").trim(),
             modifieLe: d.modifieLe,
             archive: !!d.archive,
+            sauvegardeLe: d.sauvegardeLe || null,
+            statutSauvegarde: statutSauvegarde(d),
             signeEntree: !!d.campagnes.entree.signeLe,
             signeSortie: !!d.campagnes.sortie.signeLe,
             avancement: PL.progression(d, d.campagnes.sortie.signeLe ||
@@ -296,16 +323,28 @@
         copie.photosIncluses = {};
         paires.filter(Boolean).forEach(function (p) { copie.photosIncluses[p[0]] = p[1]; });
 
-        var nom = "potentia-loan-" +
-          titre(d).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 48) +
-          ".json";
         return {
-          nom: nom === "potentia-loan-.json" ? "potentia-loan.json" : nom,
+          nom: nomFichier(d),
           blob: new Blob([JSON.stringify(copie, null, 2)], { type: "application/json" }),
           photos: paires.filter(Boolean).length,
           titre: titre(d)
         };
       });
+    },
+
+    /* Enregistre qu'une copie du dossier est sortie de l'appareil. Sans
+       horodatage du modifieLe : archiver n'est pas modifier le constat. */
+    marquerSauvegarde: function (id) {
+      var d = etat.dossiers[id];
+      if (!d) return;
+      d.sauvegardeLe = new Date().toISOString();
+      sauver();
+      notifier();
+    },
+
+    statut: function (id) {
+      var d = etat.dossiers[id];
+      return d ? statutSauvegarde(d) : null;
     },
 
     exportJSON: function (id) {
@@ -318,7 +357,9 @@
         a.click();
         document.body.removeChild(a);
         setTimeout(function () { URL.revokeObjectURL(url); }, 2000);
-        return { ok: true, photos: f.photos, octets: f.blob.size, methode: "telechargement" };
+        PL.store.marquerSauvegarde(id);
+        return { ok: true, photos: f.photos, octets: f.blob.size,
+                 nom: f.nom, methode: "telechargement" };
       }).catch(function (e) {
         return { ok: false, erreur: e.message };
       });
@@ -360,7 +401,9 @@
             "Pour l'ouvrir : " + window.location.origin + window.location.pathname +
             " puis « Importer un JSON »."
         }).then(function () {
-          return { ok: true, photos: f.photos, octets: f.blob.size, methode: "partage" };
+          PL.store.marquerSauvegarde(id);
+          return { ok: true, photos: f.photos, octets: f.blob.size,
+                   nom: f.nom, methode: "partage" };
         }).catch(function (e) {
           /* l'utilisateur a fermé la feuille de partage : ce n'est pas une erreur */
           if (e && e.name === "AbortError") return { ok: true, annule: true };
